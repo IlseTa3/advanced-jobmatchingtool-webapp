@@ -1,0 +1,23 @@
+﻿@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Register Bevestiging";
+}
+
+<h1>@ViewData["Title"]</h1>
+@{
+    if (@Model.DisplayConfirmAccountLink)
+    {
+<p>
+    Bedankt voor je registratie, je krijgt zodadelijk een e-mail van ons. Houdt zeker je spambox
+    in de gaten. Met vriendelijke groet, het Krasswerk-Team.
+</p>
+    }
+    else
+    {
+<p>
+        Please check your email to confirm your account.
+</p>
+    }
+}
+

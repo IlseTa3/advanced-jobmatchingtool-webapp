@@ -12,7 +12,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
     new MySqlServerVersion(new Version(8, 0, 36))));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -45,7 +45,7 @@ var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>(
 /*await roleManager.CreateAsync(new IdentityRole("Kandidaat"));
 await roleManager.CreateAsync(new IdentityRole("Beheerder"));
 
-var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 var kandidaatUser = await userManager.FindByEmailAsync("ilsetastenhoye@hotmail.com");
 await userManager.AddToRoleAsync(kandidaatUser, "Kandidaat");*/
 

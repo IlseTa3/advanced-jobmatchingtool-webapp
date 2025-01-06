@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using advanced_jobmatchingtool_webapp.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,23 +20,24 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
-namespace advanced_jobmatchingtool_webapp.Areas.Identity.Pages.Account
+namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly IUserEmailStore<IdentityUser> _emailStore;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            IUserStore<ApplicationUser> userStore,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, IWebHostEnvironment hostingEnvironment)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +45,7 @@ namespace advanced_jobmatchingtool_webapp.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         /// <summary>
@@ -97,6 +100,26 @@ namespace advanced_jobmatchingtool_webapp.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Voornaam")]
+            public string Firstname { get; set; }
+
+            [Required]
+            [Display(Name = "Familienaam")]
+            public string Lastname { get; set; }
+
+            [Display(Name = "GSM-nummer")]
+            public string CellPhoneNr { get; set; }
+
+            [Required]
+            [Display(Name = "Kandidaat of Klant")]
+            public string Role { get; set; }
+
+            [Display(Name = "Heb je een Individueel Maatwerk statuut?")]
+            public bool HeeftIMWStatuut { get; set; }
+            [Display(Name = "Uploaden bewijs van Individueel Maatwerk (PDF)")]
+            public IFormFile IMWStatuutBestand { get; set; }
         }
 
 
@@ -116,6 +139,27 @@ namespace advanced_jobmatchingtool_webapp.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                user.Voornaam = Input.Firstname;
+                user.Familienaam = Input.Lastname;
+                user.Gsmnr = Input.CellPhoneNr;
+                user.Role = Input.Role;
+                if (Input.Role == "Kandidaat")
+                {
+                    if (!Input.HeeftIMWStatuut || Input.IMWStatuutBestand == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Kandidaten moeten een Individueel Maatwerk statuut hebben en een bewijs uploaden.");
+                        return Page();
+                    }
+
+                    //verwerken geuploade bestand
+                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
+                    var uniqueFilename = Guid.NewGuid().ToString() + "_" + Input.IMWStatuutBestand.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFilename);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await Input.IMWStatuutBestand.CopyToAsync(stream);
+                    }
+                }
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -132,9 +176,13 @@ namespace advanced_jobmatchingtool_webapp.Areas.Identity.Pages.Account
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Bevestig je e-mailadres",
-                        $"Bedankt voor je registratie, je zal spoedig gecontacteerd worden door een van onze medewerkers." +
+                        $"Bedankt voor je registratie. Het enige wat je nu nog moet doen is je e-mailadres bevestigen.<br/><br/>" +
+                        "Dit kan door op bijgevoegde link te klikken.<br/><br/>" +
                         $"Met vriendelijke groet, het Krasswerk-Team <br/><br/>" +
                         $"Klik op onderstaande link om je e-mailadres te bevestigen: <br/> <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Bevestig je e-mailadres</a>.");
+
+                    //rol toevoegen
+                    await _userManager.AddToRoleAsync(user, Input.Role);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -156,27 +204,27 @@ namespace advanced_jobmatchingtool_webapp.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        private ApplicationUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser>();
+                return Activator.CreateInstance<ApplicationUser>();
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<IdentityUser> GetEmailStore()
+        private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<IdentityUser>)_userStore;
+            return (IUserEmailStore<ApplicationUser>)_userStore;
         }
     }
 }

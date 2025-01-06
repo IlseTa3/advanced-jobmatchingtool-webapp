@@ -3,12 +3,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace advanced_jobmatchingtool_webapp.Models
 {
-    public class ApplicationDbContext: IdentityDbContext
+    public class ApplicationDbContext:IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
-        public DbSet<Kandidaat> Kandidaten {  get; set; }
+        public DbSet<Kandidaat> Kandidaten { get; set; }
+
+
+
+
+
+
     }
 }

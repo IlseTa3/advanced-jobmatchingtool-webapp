@@ -1,0 +1,109 @@
+﻿@page
+@using AdvancedJobmatchingTool.Areas.Identity.Pages.Account
+@model RegisterModel
+@{
+    ViewData["Title"] = "Registratie";
+}
+
+<style>
+    h1 {
+        text-align: center;
+        margin-bottom: 1em;
+    }
+
+    .col-md-4 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 0.5em;
+    }
+
+    .form-group {
+        margin-bottom: 0.7em;
+    }
+
+    label.kandidaat-klant {
+        margin-bottom: 0.7em;
+        font-weight: bolder;
+    }
+</style>
+
+<h1>@ViewData["Title"]</h1>
+
+
+<div class="col-md-4">
+    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+        <h2>Maak een nieuw account aan.</h2>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="form-group">
+            <label class="kandidaat-klant" asp-for="Input.Role">Duid aan of je Kandidaat of Klant bent</label>
+            <select asp-for="Input.Role" class="form-control">
+                <option value="">--Selecteer een optie --</option>
+                <option value="Kandidaat">Kandidaat</option>
+                <option value="Klant">Klant</option>
+            </select>
+            <span asp-validation-for="Input.Role" class="text-danger"></span>
+        </div>
+        <div id="kandidaat-section" style="display:none;">
+            <div class="form-group">
+                <label asp-for="Input.HeeftIMWStatuut">Heeft u een Individueel Maatwerk statuut?</label>
+                <input asp-for="Input.HeeftIMWStatuut" type="checkbox" />
+                <span asp-validation-for="Input.HeeftIMWStatuut" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.IMWStatuutBestand">Upload bewijs (PDF)</label>
+                <input asp-for="Input.IMWStatuutBestand" type="file" class="form-control" />
+                <span asp-validation-for="Input.IMWStatuutBestand" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Firstname" class="form-control" aria-required="true" placeholder="Firstname" />
+            <label asp-for="Input.Firstname">Voornaam</label>
+            <span asp-validation-for="Input.Firstname" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Lastname" class="form-control" aria-required="true" placeholder="Lastname" />
+            <label asp-for="Input.Lastname">Familienaam</label>
+            <span asp-validation-for="Input.Lastname" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.CellPhoneNr" class="form-control" aria-required="true" placeholder="Cell Phone Number" />
+            <label asp-for="Input.CellPhoneNr">GSM nummer</label>
+            <span asp-validation-for="Input.CellPhoneNr" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+            <label asp-for="Input.Email">E-mail</label>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+            <label asp-for="Input.Password">Wachtwoord</label>
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+            <label asp-for="Input.ConfirmPassword">Bevestig wachtwoord</label>
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Registreer</button>
+    </form>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.getElementById("Input_Role").addEventListener("change", function() {
+            var role = this.value;
+            var section = document.getElementById("kandidaat-section");
+            if (role === "Kandidaat") {
+                section.style.display = "block";
+            } else {
+                section.style.display = "none";
+            }
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

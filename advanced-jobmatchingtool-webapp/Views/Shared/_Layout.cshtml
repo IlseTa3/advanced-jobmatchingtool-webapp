@@ -28,6 +28,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Kandidaten" asp-action="Index">Persoonlijke gegevens</a>
                            </li>
                         }
+                        @if (User.IsInRole("Beheerder"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Vragen" asp-action="Index">Beheer Vragenlijst</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

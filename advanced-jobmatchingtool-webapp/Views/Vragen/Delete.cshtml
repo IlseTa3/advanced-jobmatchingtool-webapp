@@ -1,0 +1,33 @@
+﻿@model advanced_jobmatchingtool_webapp.Models.Vraag
+
+<h2>Weet je zeker dat je deze vraag wil verwijderen?</h2>
+
+<div>
+    <h4>@Model.VraagText</h4>
+    <dl class="row">
+        <dt class="col-sm-2">Categorie</dt>
+        <dd class="col-sm-10">@Model.Categorie</dd>
+
+        <dt class="col-sm-2">Subcategorie</dt>
+        <dd class="col-sm-10">@Model.SubCategorie</dd>
+
+        <dt class="col-sm-2">Type</dt>
+        <dd class="col-sm-10">@Model.Type</dd>
+
+        <dt class="col-sm-2">Opties</dt>
+        <dd class="col-sm-10">@string.Join(", ", Model.Opties)</dd>
+
+        <dt class="col-sm-2">Extra info</dt>
+        <dd class="col-sm-10">@Model.ExtraInformatie</dd>
+
+        <dt class="col-sm-2">Voor wie</dt>
+        <dd class="col-sm-10">@Model.VoorWie</dd>
+    </dl>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Verwijderen</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuleren</a>
+</form>
+

@@ -25,7 +25,7 @@
                         @if (User.IsInRole("Kandidaat"))
                         {
                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Kandidaten" asp-action="Index">Persoonlijke gegevens</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="HomeKandidaten" asp-action="Index">Overzichtspagina</a>
                            </li>
                         }
                         @if (User.IsInRole("Beheerder"))

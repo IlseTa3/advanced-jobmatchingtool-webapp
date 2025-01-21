@@ -109,8 +109,7 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
             [Display(Name = "Familienaam")]
             public string Lastname { get; set; }
 
-            [Display(Name = "GSM-nummer")]
-            public string CellPhoneNr { get; set; }
+            
 
             [Required]
             [Display(Name = "Kandidaat of Klant")]
@@ -141,7 +140,7 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 user.Voornaam = Input.Firstname;
                 user.Familienaam = Input.Lastname;
-                user.Gsmnr = Input.CellPhoneNr;
+              
                 user.Role = Input.Role;
                 if (Input.Role == "Kandidaat")
                 {

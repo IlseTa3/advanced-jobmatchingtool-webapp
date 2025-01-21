@@ -50,7 +50,7 @@ namespace advanced_jobmatchingtool_webapp.Controllers
         }
 
         //GET Vragen/Edit/1
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(string id)
         {
             var vraag = await _dbService.GetVraagByIdAsync(id);
             if (vraag == null)
@@ -64,7 +64,7 @@ namespace advanced_jobmatchingtool_webapp.Controllers
         //POST Vragen/Edit/1
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Vraag updatedVraag)
+        public async Task<IActionResult> Edit(string id, Vraag updatedVraag)
         {
             if (id != updatedVraag.Id)
             {
@@ -81,7 +81,7 @@ namespace advanced_jobmatchingtool_webapp.Controllers
         }
 
         //GET Vragen/Delete/1
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var vraag = await _dbService.GetVraagByIdAsync(id);
             if (vraag == null)
@@ -96,7 +96,7 @@ namespace advanced_jobmatchingtool_webapp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             await _dbService.DeleteVraagAsync(id);
             return RedirectToAction(nameof(Index));

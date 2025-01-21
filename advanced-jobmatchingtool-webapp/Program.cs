@@ -18,6 +18,7 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
 });
 
 builder.Services.AddSingleton<MongoDbService>();
+builder.Services.AddSingleton<MongoDbVragenPerCategorieService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -34,7 +35,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<IKandidaatService, KandidaatService>();
+
 builder.Services.AddTransient<IEmailSender,EmailService>();
 
 builder.Logging.ClearProviders();
@@ -58,8 +59,8 @@ var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>(
 //await roleManager.CreateAsync(new IdentityRole("Beheerder"));
 
 var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-var kandidaatUser = await userManager.FindByEmailAsync("ilse_tastenhoye@msn.com");
-await userManager.AddToRoleAsync(kandidaatUser, "Beheerder");
+//var kandidaatUser = await userManager.FindByEmailAsync("ilse_tastenhoye@msn.com");
+//await userManager.AddToRoleAsync(kandidaatUser, "Beheerder");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

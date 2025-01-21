@@ -1,0 +1,99 @@
+﻿@model advanced_jobmatchingtool_webapp.ViewModels.Studies.StudiesViewModel
+
+<style>
+    em {
+        font-weight: bolder;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    #vraag {
+        text-align: center;
+    }
+
+    .ingevoerde-antwoorden {
+        text-align: left;
+    }
+</style>
+
+<h2>Studies Kandidaat:</h2>
+
+<p>@Model.Voornaam @Model.Familienaam</p>
+
+@using (Html.BeginForm("SaveAntwoorden", "StudieVragen", FormMethod.Post))
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Vraag</th>
+                <th>Antwoord</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.VragenAntwoorden.Count; i++)
+            {
+                <tr>
+                    <td id="vraag">
+                        @Model.VragenAntwoorden[i].VraagText
+                        <input type="hidden" name="vragenAntwoorden[@i].VraagId" value="@Model.VragenAntwoorden[i].VraagId" />
+                        <input type="hidden" name="vragenAntwoorden[@i].UserId" value="@Model.UserId" />
+                        <input type="hidden" name="vragenAntwoorden[@i].Type" value="@Model.VragenAntwoorden[i].Type" />
+                        @if (!string.IsNullOrEmpty(Model.VragenAntwoorden[i].ExtraInformatie))
+                        {
+                            <p><em>@Model.VragenAntwoorden[i].ExtraInformatie</em></p>
+                        }
+                    </td>
+                    <td>
+                        @if (Model.VragenAntwoorden[i].Type == "Radiobuttons")
+                        {
+                            foreach (var optie in Model.VragenAntwoorden[i].Opties)
+                            {
+                                <label>
+                                    <input type="radio" name="vragenAntwoorden[@i].Antwoord" value="@optie" @(Model.VragenAntwoorden[i].Antwoord == optie ? "checked" : "") /> @optie
+                                </label>
+                            }
+                        }
+                        else if (Model.VragenAntwoorden[i].Type == "Checkbox")
+                        {
+                            foreach (var optie in Model.VragenAntwoorden[i].Opties)
+                            {
+                                <label>
+                                    <input type="checkbox" name="vragenAntwoorden[@i].Antwoorden" value="@optie" @(Model.VragenAntwoorden[i].Antwoorden != null && Model.VragenAntwoorden[i].Antwoorden.Contains(optie) ? "checked" : "") /> @optie
+                                </label>
+                            }
+                        }
+                        else
+                        {
+                            <input type="text" name="vragenAntwoorden[@i].Antwoord" class="form-control" value="@Model.VragenAntwoorden[i].Antwoord" />
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Opslaan</button>
+    <a asp-controller="HomeKandidaten" asp-action="Index" class="btn btn-secondary">Annuleren</a>
+}
+
+<h3>Ingevoerde Antwoorden</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th class="ingevoerde-antwoorden">Vraag</th>
+            <th class="ingevoerde-antwoorden">Antwoord</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var antwoord in Model.VragenAntwoorden)
+        {
+            <tr>
+                <td>@antwoord.VraagText</td>
+                <td>@antwoord.Antwoord</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

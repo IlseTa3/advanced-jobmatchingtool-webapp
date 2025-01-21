@@ -6,8 +6,8 @@ namespace advanced_jobmatchingtool_webapp.Models
     public class Vraag
     {
         [BsonId]
-        [BsonRepresentation(BsonType.Int32)]
-        public int Id { get; set; }
+        [BsonRepresentation(BsonType.String)]
+        public string Id { get; set; }
 
         [BsonElement("vraag")]
         public string VraagText { get; set; }

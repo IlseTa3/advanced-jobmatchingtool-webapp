@@ -10,8 +10,8 @@ namespace advanced_jobmatchingtool_webapp.Models
         {
         }
 
-        DbSet<Categorie> CategorieLijst {  get; set; }
-        DbSet<SubCategorie> SubCategorieLijst { get; set; }
+        public DbSet<Categorie> CategorieLijst {  get; set; }
+        public DbSet<SubCategorie> SubCategorieLijst { get; set; }
 
         
 

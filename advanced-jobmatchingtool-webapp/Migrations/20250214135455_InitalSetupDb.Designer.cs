@@ -12,8 +12,8 @@ using advanced_jobmatchingtool_webapp.Models;
 namespace advanced_jobmatchingtool_webapp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250106194654_UpdatingRegisterModel")]
-    partial class UpdatingRegisterModel
+    [Migration("20250214135455_InitalSetupDb")]
+    partial class InitalSetupDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -184,10 +184,6 @@ namespace advanced_jobmatchingtool_webapp.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Gsmnr")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<bool>("HeefIMWStatuut")
                         .HasColumnType("tinyint(1)");
 
@@ -248,7 +244,7 @@ namespace advanced_jobmatchingtool_webapp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.Kandidaat", b =>
+            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.Categorie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -256,48 +252,30 @@ namespace advanced_jobmatchingtool_webapp.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Busnr")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Familienaam")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("Geboortedatum")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("GsmNr")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Huisnr")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Postcode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Stad")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Straat")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Voornaam")
+                    b.Property<string>("NaamCategorie")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Kandidaten");
+                    b.ToTable("CategorieLijst");
+                });
+
+            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.SubCategorie", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("NaamSubCategorie")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SubCategorieLijst");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

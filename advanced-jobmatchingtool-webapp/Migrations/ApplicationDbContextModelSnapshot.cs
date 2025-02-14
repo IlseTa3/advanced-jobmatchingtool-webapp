@@ -241,7 +241,7 @@ namespace advanced_jobmatchingtool_webapp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.BehoeftesKandidaat", b =>
+            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.Categorie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -249,30 +249,16 @@ namespace advanced_jobmatchingtool_webapp.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Antwoord")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Categorie")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("DatumIngevuld")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("VraagId")
+                    b.Property<string>("NaamCategorie")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("BehoeftesKandidaten");
+                    b.ToTable("CategorieLijst");
                 });
 
-            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.PersonaliaKandidaat", b =>
+            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.SubCategorie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -280,151 +266,13 @@ namespace advanced_jobmatchingtool_webapp.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Antwoord")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Categorie")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("DatumIngevuld")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("VraagId")
+                    b.Property<string>("NaamSubCategorie")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PersonaliaKandidaten");
-                });
-
-            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.StressKandidaat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Antwoord")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Categorie")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("DatumIngevuld")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("VraagId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StressKandidaten");
-                });
-
-            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.StudiesKandidaat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Antwoord")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Categorie")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("DatumIngevuld")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("VraagId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StudiesKandidaten");
-                });
-
-            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.TriggersKandidaat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Antwoord")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Categorie")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("DatumIngevuld")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("VraagId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TriggersKandidaten");
-                });
-
-            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.WerkKandidaat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Antwoord")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Categorie")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("DatumIngevuld")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("VraagId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WerkKandidaten");
+                    b.ToTable("SubCategorieLijst");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -8,18 +8,6 @@ using MongoDB.Driver;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-var mongoSettings = builder.Configuration.GetSection("MongoSettings").Get<MongoSettings>();
-builder.Services.AddSingleton<IMongoClient>(_ => new MongoClient(mongoSettings.ConnectionString));
-builder.Services.AddSingleton<IMongoDatabase>(sp =>
-{
-    var client = sp.GetRequiredService<IMongoClient>();
-    return client.GetDatabase(mongoSettings.DatabaseName);
-});
-
-builder.Services.AddSingleton<MongoDbService>();
-builder.Services.AddSingleton<MongoDbVragenPerCategorieService>();
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -55,8 +43,9 @@ if (!app.Environment.IsDevelopment())
 var serviceProvider = app.Services.CreateScope().ServiceProvider;
 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-//await roleManager.CreateAsync(new IdentityRole("Kandidaat"));
-//await roleManager.CreateAsync(new IdentityRole("Beheerder"));
+await roleManager.CreateAsync(new IdentityRole("Kandidaat"));
+await roleManager.CreateAsync(new IdentityRole("Beheerder"));
+await roleManager.CreateAsync(new IdentityRole("Klant"));
 
 var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 //var kandidaatUser = await userManager.FindByEmailAsync("ilse_tastenhoye@msn.com");

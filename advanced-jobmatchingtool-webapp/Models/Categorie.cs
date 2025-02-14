@@ -4,5 +4,7 @@
     {
         public int Id { get; set; }
         public string NaamCategorie { get; set; }
+
+        public ICollection<Vragenlijst> Vragenlijst { get; set; }
     }
 }

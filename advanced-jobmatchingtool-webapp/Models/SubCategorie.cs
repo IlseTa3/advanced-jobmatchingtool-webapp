@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string NaamSubCategorie { get; set; }
 
-        public ICollection<Vragenlijst> Vragenlijst { get; set; }
+        public int? CategorieId { get; set; }
+        public Categorie? Categorie { get; set; }
     }
 }

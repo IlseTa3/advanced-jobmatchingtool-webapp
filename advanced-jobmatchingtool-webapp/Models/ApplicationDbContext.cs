@@ -10,67 +10,33 @@ namespace advanced_jobmatchingtool_webapp.Models
         {
         }
 
-        public DbSet<Categorie> CategorieLijst {  get; set; }
-        public DbSet<SubCategorie> SubCategorieLijst { get; set; }
-        public DbSet<Vragenlijst> Vragenlijsten { get; set; }
-        public DbSet<SoortAntwoord> SoortAntwoorden { get; set; }
-        public DbSet<OptieAntwoord> AntwoordOpties { get; set; }
-        public DbSet<AntwoordKandidaat> AntwoordKandidaten { get; set; }
-        public DbSet<AntwoordKlant> AntwoordKlanten { get; set; }
+        public DbSet<Categorie> Categorieën { get; set; }
+        public DbSet<SubCategorie> SubCategorieën { get; set; }
+        public DbSet<Vraag> Vragen { get; set; }
+        public DbSet<AntwoordOptie> AntwoordOpties { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Vragenlijst>()
+            // One-to-many: Categorie → Vragen
+            modelBuilder.Entity<Vraag>()
                 .HasOne(v => v.Categorie)
-                .WithMany(c => c.Vragenlijst)
+                .WithMany(c => c.Vragen)
                 .HasForeignKey(v => v.CategorieId);
 
-            modelBuilder.Entity<Vragenlijst>()
-                .HasOne(v => v.SubCategorie)
-                .WithMany(sc => sc.Vragenlijst)
-                .HasForeignKey(v => v.SubCategorieId);
-
-            modelBuilder.Entity<Vragenlijst>()
-            .HasOne(v => v.SoortAntwoord)
-            .WithMany()
-            .HasForeignKey(v => v.SoortAntwoordId);
-
-            modelBuilder.Entity<Vragenlijst>()
-                .HasMany(v => v.AntwoordOpties)
-                .WithOne(ao => ao.Vragenlijst)
-                .HasForeignKey(ao => ao.VragenlijstId);
-
-            modelBuilder.Entity<OptieAntwoord>()
-                .HasOne(v => v.SoortAntwoord)
-                .WithMany(sa => sa.AntwoordOpties)
-                .HasForeignKey(v => v.SoortAntwoordId);
-
-            modelBuilder.Entity<AntwoordKandidaat>()
-                .HasOne(ak => ak.Vragenlijst)
+            // One-to-many: Categorie → SubCategorieën
+            modelBuilder.Entity<SubCategorie>()
+                .HasOne(sc => sc.Categorie)
                 .WithMany()
-                .HasForeignKey(ak => ak.VragenlijstId);
+                .HasForeignKey(sc => sc.CategorieId);
 
-            modelBuilder.Entity<AntwoordKandidaat>()
-                .HasOne(ak => ak.User)
-                .WithMany()
-                .HasForeignKey(ak => ak.UserId);
-
-            modelBuilder.Entity<AntwoordKlant>()
-                .HasOne(ak => ak.Vragenlijst)
-                .WithMany()
-                .HasForeignKey(ak => ak.VragenlijstId);
-
-            modelBuilder.Entity<AntwoordKlant>()
-                .HasOne(ak => ak.User)
-                .WithMany()
-                .HasForeignKey(ak => ak.UserId);
+            // One-to-many: Vraag → AntwoordOpties
+            modelBuilder.Entity<AntwoordOptie>()
+                .HasOne(ao => ao.Vraag)
+                .WithMany(v => v.AntwoordOpties)
+                .HasForeignKey(ao => ao.VraagId);
         }
-
-
-
-
 
     }
 }

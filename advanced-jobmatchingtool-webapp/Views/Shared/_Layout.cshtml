@@ -22,18 +22,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @if (User.IsInRole("Kandidaat"))
-                        {
-                           <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="HomeKandidaten" asp-action="Index">Overzichtspagina</a>
-                           </li>
-                        }
-                        @if (User.IsInRole("Beheerder"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Vragen" asp-action="Index">Beheer Vragenlijst</a>
-                            </li>
-                        }
+                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

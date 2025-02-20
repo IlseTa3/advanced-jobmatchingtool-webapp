@@ -1,8 +1,8 @@
 ﻿using advanced_jobmatchingtool_webapp.Models;
 
-namespace advanced_jobmatchingtool_webapp.Services
+namespace advanced_jobmatchingtool_webapp.Repositories
 {
-    public interface ISubCategorieService
+    public interface ISubCategorieRepository
     {
         Task<IEnumerable<SubCategorie>> GetAllSubCategoriesAsync();
         Task<SubCategorie> GetSubCategorieByIdAsync(int id);

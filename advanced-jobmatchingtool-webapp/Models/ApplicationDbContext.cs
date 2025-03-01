@@ -10,9 +10,9 @@ namespace advanced_jobmatchingtool_webapp.Models
         {
         }
 
-        public DbSet<Categorie> Categorieën { get; set; }
-        public DbSet<SubCategorie> SubCategorieën { get; set; }
-        public DbSet<Vraag> Vragen { get; set; }
+        public DbSet<CategorieSubCat> CategorieSubCats { get; set; }
+        public DbSet<VraagKandidaat> VragenKandidaten { get; set; }
+        public DbSet<VraagKlant> VragenKlanten { get; set; }
         public DbSet<AntwoordOptie> AntwoordOpties { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,22 +20,31 @@ namespace advanced_jobmatchingtool_webapp.Models
             base.OnModelCreating(modelBuilder);
 
             // One-to-many: Categorie → Vragen
-            modelBuilder.Entity<Vraag>()
+            modelBuilder.Entity<VraagKandidaat>()
                 .HasOne(v => v.Categorie)
-                .WithMany(c => c.Vragen)
-                .HasForeignKey(v => v.CategorieId);
+                .WithMany(c => c.VragenKandidaten)
+                .HasForeignKey(v => v.CategorieSubCatId);
 
-            // One-to-many: Categorie → SubCategorieën
-            modelBuilder.Entity<SubCategorie>()
-                .HasOne(sc => sc.Categorie)
-                .WithMany()
-                .HasForeignKey(sc => sc.CategorieId);
+            // One-to-many: Opties -> vraag
+            modelBuilder.Entity<VraagKandidaat>()
+            .HasOne(v => v.AntwoordOptie)
+            .WithMany(a => a.VragenKandidaten)
+            .HasForeignKey(v => v.AntwoordOptieId)
+            .OnDelete(DeleteBehavior.SetNull);  // Optioneel: voorkomt cascade delete
 
-            // One-to-many: Vraag → AntwoordOpties
-            modelBuilder.Entity<AntwoordOptie>()
-                .HasOne(ao => ao.Vraag)
-                .WithMany(v => v.AntwoordOpties)
-                .HasForeignKey(ao => ao.VraagId);
+            // One-to-many: Categorie → Vragen
+            modelBuilder.Entity<VraagKlant>()
+                .HasOne(v => v.Categorie)
+                .WithMany(c => c.VragenKlanten)
+                .HasForeignKey(v => v.CategorieSubCatId);
+
+            // One-to-many: Opties -> vraag
+            modelBuilder.Entity<VraagKlant>()
+            .HasOne(v => v.AntwoordOptie)
+            .WithMany(a => a.VragenKlanten)
+            .HasForeignKey(v => v.AntwoordOptieId)
+            .OnDelete(DeleteBehavior.SetNull);  // Optioneel: voorkomt cascade delete
+
         }
 
     }

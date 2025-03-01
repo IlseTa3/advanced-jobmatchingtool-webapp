@@ -25,10 +25,14 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped<ICategorieRepository, CategorieRepository>();
-builder.Services.AddScoped<ICategorieService, CategorieService>();
-builder.Services.AddScoped<ISubCategorieRepository, SubCategorieRepository>();
-builder.Services.AddScoped<ISubCategorieService, SubCategorieService>();
+builder.Services.AddScoped<ICategorieSubCatRepository, CategorieSubCatRepository>();
+builder.Services.AddScoped<ICategorieSubCatService, CategorieSubCatService>();
+builder.Services.AddScoped<IAntwoordOptieRepository, AntwoordOptieRepository>();
+builder.Services.AddScoped<IAntwoordOptieService, AntwoordOptieService>();
+builder.Services.AddScoped<IVraagKandidaatRepository, VraagKandidaatRepository>();
+builder.Services.AddScoped<IVraagKandidaatService, VraagKandidaatService>();
+builder.Services.AddScoped<IVraagKlantRepository, VraagKlantRepository>();
+builder.Services.AddScoped<IVraagKlantService, VraagKlantService>();
 builder.Services.AddTransient<IEmailSender,EmailService>();
 
 builder.Logging.ClearProviders();

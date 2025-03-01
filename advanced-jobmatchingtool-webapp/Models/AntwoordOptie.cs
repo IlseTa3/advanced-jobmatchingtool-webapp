@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public string OptieTekst { get; set; }
 
-        public int VraagId { get; set; }
-        public Vraag Vraag { get; set; }
+        public ICollection<VraagKandidaat> VragenKandidaten { get; set; } = new List<VraagKandidaat>();
+        public ICollection<VraagKlant> VragenKlanten { get; set; } = new List<VraagKlant>();
     }
 }

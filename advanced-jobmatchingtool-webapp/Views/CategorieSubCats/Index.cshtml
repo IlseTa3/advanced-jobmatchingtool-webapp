@@ -1,0 +1,95 @@
+﻿@model IEnumerable<advanced_jobmatchingtool_webapp.ViewModels.CatSubCats.CatSubCatIndexViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    #custtable tbody tr {
+        cursor: pointer;
+        color: darkblue;
+    }
+</style>
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table id="custtable" class="display cell-border compact">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NaamCategorie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NaamSubCategorie)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    @*
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NaamCategorie)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NaamSubCategorie)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+
+    *@
+</table>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.11/css/jquery.dataTables.css" />
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.js"></script>
+
+    <script>
+        $(function () {
+            $('#custtable').DataTable({
+                "ajax": {
+                    //Client Side
+                    "url": "/CategorieSubCats/GetCatSubCatData",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "naamCategorie" },
+                    { "data": "naamSubCategorie" },
+                    { "data": null, "defaultContent": "<a href='' class='del'>Delete </a>" }
+                ]
+
+            });
+
+            $('#custtable tbody').one('click', 'tr', function (e) {
+                e.preventDefault();
+                var id = $("td:first", this).text();
+                if ($(e.target).is("a.del")) {
+                    $.get('@Url.Action("Delete", "CategorieSubCats")', { id: id }, function (data) {
+                        $("body").html(data);
+                    });
+                    return;
+                }
+                $.get('@Url.Action("Edit", "CategorieSubCats")', { id: id }, function (data) {
+                    $("body").html(data);
+                })
+            });
+
+        });
+    </script>
+}

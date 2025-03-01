@@ -1,0 +1,108 @@
+﻿@model IEnumerable<advanced_jobmatchingtool_webapp.ViewModels.Vraag.VraagKlantIndexViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table id="custtable" class="display cell-border compact">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VraagTekst)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Categorie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubCategorie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SoortAntwoord)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AntwoordOptie)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    @*
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.VraagText)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SoortAntwoord)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Categorie.NaamCategorie)
+            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Categorie.NaamSubCategorie)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AntwoordOptie.OptieTekst)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+   *@
+</table>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.11/css/jquery.dataTables.css" />
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.js"></script>
+
+    <script>
+        $(function () {
+            $('#custtable').DataTable({
+                "ajax": {
+                    //Client Side
+                    "url": "/VragenKlant/GetAllVragenKlantenData",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "vraagTekst" },
+                    { "data": "categorie" },
+                    { "data": "subCategorie" },
+                    { "data": "soortAntwoordWeergave", title:"Soort Antwoord" },
+                    { "data": "antwoordOptie" },
+                    { "data": null, "defaultContent": "<a href='' class='del'>Delete </a>" }
+                ]
+
+            });
+
+            $('#custtable tbody').one('click', 'tr', function (e) {
+                e.preventDefault();
+                var id = $("td:first", this).text();
+                if ($(e.target).is("a.del")) {
+                    $.get('@Url.Action("Delete", "VragenKlant")', { id: id }, function (data) {
+                        $("body").html(data);
+                    });
+                    return;
+                }
+                $.get('@Url.Action("Edit", "VragenKlant")', { id: id }, function (data) {
+                    $("body").html(data);
+                })
+            });
+
+        });
+    </script>
+}

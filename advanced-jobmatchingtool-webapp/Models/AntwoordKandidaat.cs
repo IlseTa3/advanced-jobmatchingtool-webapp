@@ -8,7 +8,7 @@
 
         public string Antwoord { get; set; }
 
-        public Vraag Vragenlijst { get; set; }
+        public VraagKandidaat Vragenlijst { get; set; }
         public ApplicationUser User { get; set; }
     }
 }

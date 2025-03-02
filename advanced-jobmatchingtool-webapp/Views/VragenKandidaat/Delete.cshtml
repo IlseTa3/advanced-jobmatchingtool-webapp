@@ -11,29 +11,35 @@
     <h4>VraagKandidaat</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.VraagText)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.VraagText)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SoortAntwoord)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.SoortAntwoord)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Categorie)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Categorie.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Categorie.NaamCategorie)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Categorie)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Categorie.NaamSubCategorie)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.AntwoordOptie)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AntwoordOptie.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AntwoordOptie.OptieTekst)
         </dd>
     </dl>
     

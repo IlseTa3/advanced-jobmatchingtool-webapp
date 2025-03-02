@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using advanced_jobmatchingtool_webapp.Models;
 using advanced_jobmatchingtool_webapp.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace advanced_jobmatchingtool_webapp.Controllers
 {
+    [Authorize(Roles = "Beheerder")]
     public class VragenKandidaatController : Controller
     {
         private readonly ApplicationDbContext _context;

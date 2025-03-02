@@ -21,6 +21,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequiredKandidaat", policy => policy.RequireRole("Kandidaat"));
+    options.AddPolicy("RequiredKlant", policy => policy.RequireRole("Klant"));
+    options.AddPolicy("RequiredBeheerder", policy => policy.RequireRole("Beheerder"));
 });
 
 builder.Services.AddRazorPages();
@@ -57,6 +59,24 @@ await roleManager.CreateAsync(new IdentityRole("Beheerder"));
 await roleManager.CreateAsync(new IdentityRole("Klant"));
 
 var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+/*var beheerUser = new ApplicationUser
+{
+    Voornaam = "Lies",
+    Familienaam = "Van Brabant",
+    UserName = "liesvanbrabant@yahoo.com",
+    Email = "liesvanbrabant@yahoo.com",
+    EmailConfirmed = true,
+    Role = "Beheerder",
+    PhoneNumber = "0471554422"
+};
+
+var result = await userManager.CreateAsync(beheerUser, "Welcome123!");
+if(result.Succeeded)
+{
+    await userManager.AddToRoleAsync(beheerUser, "Beheerder");
+}*/
+
 //var kandidaatUser = await userManager.FindByEmailAsync("ilse_tastenhoye@msn.com");
 //await userManager.AddToRoleAsync(kandidaatUser, "Beheerder");
 

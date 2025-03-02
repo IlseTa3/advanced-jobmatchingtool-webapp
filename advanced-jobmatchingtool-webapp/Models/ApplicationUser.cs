@@ -9,8 +9,8 @@ namespace advanced_jobmatchingtool_webapp.Models
        
         public string Role { get; set; }
 
-        public bool HeefIMWStatuut { get; set; }
+        public bool? HeefIMWStatuut { get; set; }
 
-        public string IMWStatuutBestand { get; set; }
+        public string? IMWStatuutBestand { get; set; }
     }
 }

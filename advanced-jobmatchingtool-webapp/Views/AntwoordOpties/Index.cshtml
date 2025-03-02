@@ -14,7 +14,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Aanmaken</a>
 </p>
 <table id="custtable" class="display cell-border compact">
     <thead>
@@ -63,7 +63,7 @@
                 "columns": [
                     { "data": "id" },
                     { "data": "optieTekst" },
-                    { "data": null, "defaultContent": "<a href='' class='del'>Delete </a>" }
+                    { "data": null, "defaultContent": "<a href='' class='del'>Verwijderen</a>" }
                 ]
 
             });
@@ -85,3 +85,4 @@
         });
     </script>
 }
+<a asp-controller="HomeBeheer" asp-action="Index" class="btn btn-secondary">Terug</a>

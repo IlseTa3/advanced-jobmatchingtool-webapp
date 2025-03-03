@@ -14,6 +14,8 @@ namespace advanced_jobmatchingtool_webapp.Models
         public DbSet<VraagKandidaat> VragenKandidaten { get; set; }
         public DbSet<VraagKlant> VragenKlanten { get; set; }
         public DbSet<AntwoordOptie> AntwoordOpties { get; set; }
+        public DbSet<AntwoordKandidaat> AntwoordenKandidaten { get; set; }
+        public DbSet<AntwoordKlant> AntwoordenKlanten { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,6 +46,34 @@ namespace advanced_jobmatchingtool_webapp.Models
             .WithMany(a => a.VragenKlanten)
             .HasForeignKey(v => v.AntwoordOptieId)
             .OnDelete(DeleteBehavior.SetNull);  // Optioneel: voorkomt cascade delete
+
+            // Relatie VraagKandidaat → AntwoordKandidaat (1-N)
+            modelBuilder.Entity<AntwoordKandidaat>()
+                .HasOne(a => a.VraagKandidaat)
+                .WithMany(v => v.AntwoordenKandidaten)
+                .HasForeignKey(a => a.VraagKandidaatId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relatie VraagKlant → AntwoordKlant (1-N)
+            modelBuilder.Entity<AntwoordKlant>()
+                .HasOne(a => a.VraagKlant)
+                .WithMany(v => v.AntwoordenKlanten)
+                .HasForeignKey(a => a.VraagKlantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relatie AntwoordKandidaat → ApplicationUser (1-N)
+            modelBuilder.Entity<AntwoordKandidaat>()
+                .HasOne(a => a.User)
+                .WithMany()
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Relatie AntwoordKlant → ApplicationUser (1-N)
+            modelBuilder.Entity<AntwoordKlant>()
+                .HasOne(a => a.User)
+                .WithMany()
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
 

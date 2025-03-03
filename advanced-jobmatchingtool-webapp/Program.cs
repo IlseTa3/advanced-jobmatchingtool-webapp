@@ -35,6 +35,8 @@ builder.Services.AddScoped<IVraagKandidaatRepository, VraagKandidaatRepository>(
 builder.Services.AddScoped<IVraagKandidaatService, VraagKandidaatService>();
 builder.Services.AddScoped<IVraagKlantRepository, VraagKlantRepository>();
 builder.Services.AddScoped<IVraagKlantService, VraagKlantService>();
+builder.Services.AddScoped<IAntwoordKandidaatRepository, AntwoordKandidaatRepository>();
+builder.Services.AddScoped<IAntwoordKlantRepository, AntwoordKlantRepository>();
 builder.Services.AddTransient<IEmailSender,EmailService>();
 
 builder.Logging.ClearProviders();
@@ -60,22 +62,42 @@ await roleManager.CreateAsync(new IdentityRole("Klant"));
 
 var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-/*var beheerUser = new ApplicationUser
+//Klant 1
+/*var klant1User = new ApplicationUser
 {
-    Voornaam = "Lies",
-    Familienaam = "Van Brabant",
-    UserName = "liesvanbrabant@yahoo.com",
-    Email = "liesvanbrabant@yahoo.com",
+    Voornaam = "Thomas",
+    Familienaam = "Everaert",
+    UserName = "thomas.everaert@kinsley.com",
+    Email = "thomas.everaert@kinsley.com",
     EmailConfirmed = true,
-    Role = "Beheerder",
-    PhoneNumber = "0471554422"
+    Role = "Klant",
+    PhoneNumber = "0164507812"
 };
 
-var result = await userManager.CreateAsync(beheerUser, "Welcome123!");
+var result = await userManager.CreateAsync(klant1User, "Welcome123!");
 if(result.Succeeded)
 {
-    await userManager.AddToRoleAsync(beheerUser, "Beheerder");
-}*/
+    await userManager.AddToRoleAsync(klant1User, "Klant");
+}
+
+//klant 2
+var klant2User = new ApplicationUser
+{
+    Voornaam = "Maaike",
+    Familienaam = "Goossens",
+    UserName = "maaike.goossens@delaware.be",
+    Email = "maaike.goossens@delaware.be",
+    EmailConfirmed = true,
+    Role = "Klant",
+    PhoneNumber = "0102058874"
+};
+
+var result2 = await userManager.CreateAsync(klant2User, "Welcome123!");
+if (result.Succeeded)
+{
+    await userManager.AddToRoleAsync(klant2User, "Klant");
+}
+*/
 
 //var kandidaatUser = await userManager.FindByEmailAsync("ilse_tastenhoye@msn.com");
 //await userManager.AddToRoleAsync(kandidaatUser, "Beheerder");

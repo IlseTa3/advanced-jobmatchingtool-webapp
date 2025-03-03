@@ -3,12 +3,12 @@
     public class AntwoordKlant
     {
         public int Id { get; set; }
-        public int VragenlijstId { get; set; }
+        public int VraagKlantId { get; set; }
         public string UserId { get; set; }
-        public string Antwoord { get; set; }
-        public decimal GewichtsScore { get; set; }
+        public string AntwoordTekst { get; set; }
+        
 
-        public VraagKandidaat Vragenlijst { get; set; }
+        public VraagKlant VraagKlant { get; set; }
         public ApplicationUser User { get; set; }
     }
 }

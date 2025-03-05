@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace advanced_jobmatchingtool_webapp.Controllers
 {
-    [Authorize(Roles = "Beheerder")]
-    public class HomeBeheerController : Controller
+    public class HomeKandidaatController : Controller
     {
+        [Authorize(Roles = "Kandidaat")]
         public IActionResult Index()
         {
             return View();

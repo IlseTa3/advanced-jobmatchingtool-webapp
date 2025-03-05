@@ -5,6 +5,8 @@ using advanced_jobmatchingtool_webapp.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using MongoDB.Driver;
 using advanced_jobmatchingtool_webapp.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,12 +20,14 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequiredKandidaat", policy => policy.RequireRole("Kandidaat"));
     options.AddPolicy("RequiredKlant", policy => policy.RequireRole("Klant"));
     options.AddPolicy("RequiredBeheerder", policy => policy.RequireRole("Beheerder"));
 });
+
 
 builder.Services.AddRazorPages();
 
@@ -36,6 +40,7 @@ builder.Services.AddScoped<IVraagKandidaatService, VraagKandidaatService>();
 builder.Services.AddScoped<IVraagKlantRepository, VraagKlantRepository>();
 builder.Services.AddScoped<IVraagKlantService, VraagKlantService>();
 builder.Services.AddScoped<IAntwoordKandidaatRepository, AntwoordKandidaatRepository>();
+builder.Services.AddScoped<IAntwoordKandidaatService, AntwoordKandidaatService>();
 builder.Services.AddScoped<IAntwoordKlantRepository, AntwoordKlantRepository>();
 builder.Services.AddTransient<IEmailSender,EmailService>();
 
@@ -109,6 +114,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+
 
 app.MapRazorPages();
 

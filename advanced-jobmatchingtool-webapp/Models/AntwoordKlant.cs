@@ -6,6 +6,7 @@
         public int VraagKlantId { get; set; }
         public string UserId { get; set; }
         public string AntwoordTekst { get; set; }
+        public string? ExtraInfo { get; set; } //extra info voor beheerder in te vullen
         
 
         public VraagKlant VraagKlant { get; set; }

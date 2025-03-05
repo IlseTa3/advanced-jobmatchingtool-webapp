@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Overzicht Kandidaat</h1>
+
+<p>
+    In dit overzicht kan je zien welke vragen je kan beantwoorden en waar je moet zijn. Je kan hiervoor
+    op onderstaande links klikken. De vragen werden samengevoegd per categorie.
+</p>
+
+<p>
+    Neem rustig je tijd om in elke categorie je vragen te beantwoorden. Je hoeft niet alles ineens te beantwoorden,
+    je kan dit per categorie doen. Je kan steeds op de Annuleren-knop klikken als je wil teruggaan naar de Homepagina.
+</p>
+
+<ul>
+    <li><a asp-controller="PersonaliaKandidaat" asp-action="Index">Personalia</a></li>
+    <li><a asp-controller="StudiesKandidaat" asp-action="Index">Studies</a></li>
+    <li><a asp-controller="WerkKandidaat" asp-action="Index">Werkgerelateerde vragen</a></li>
+    <li><a asp-controller="BehoeftesKandidaat" asp-action="Index">Jouw behoeftes</a></li>
+    <li><a asp-controller="TriggersKandidaat" asp-action="Index">Jouw triggers</a></li>
+    <li><a asp-controller="StressKandidaat" asp-action="Index">Stressgerelateerde vragen</a></li>
+</ul>
+

@@ -1,9 +1,9 @@
 ﻿using advanced_jobmatchingtool_webapp.Models;
 using advanced_jobmatchingtool_webapp.ViewModels.Antwoorden;
 
-namespace advanced_jobmatchingtool_webapp.Repositories
+namespace advanced_jobmatchingtool_webapp.Services
 {
-    public interface IAntwoordKandidaatRepository
+    public interface IAntwoordKandidaatService
     {
         Task<List<VraagKandidaat>> GetVragenByCategorieAsync(int categorieId);
         Task<List<VraagKandidaat>> GetVragenByNaamCategorieAsync(string categorie);

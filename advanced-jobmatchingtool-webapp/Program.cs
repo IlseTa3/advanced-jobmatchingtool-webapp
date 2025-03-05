@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using advanced_jobmatchingtool_webapp.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using MongoDB.Driver;
+
 using advanced_jobmatchingtool_webapp.Repositories;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Net;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 

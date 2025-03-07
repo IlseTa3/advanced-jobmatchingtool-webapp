@@ -1,10 +1,13 @@
 using advanced_jobmatchingtool_webapp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using advanced_jobmatchingtool_webapp.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
-
-using advanced_jobmatchingtool_webapp.Repositories;
+using advanced_jobmatchingtool_webapp.Repositories.Kandidaat;
+using advanced_jobmatchingtool_webapp.Repositories.Klant;
+using advanced_jobmatchingtool_webapp.Repositories.Beheer;
+using advanced_jobmatchingtool_webapp.Services.Beheer;
+using advanced_jobmatchingtool_webapp.Services.Kandidaat;
+using advanced_jobmatchingtool_webapp.Services.Klant;
 
 
 

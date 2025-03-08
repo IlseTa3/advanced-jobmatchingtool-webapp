@@ -1,15 +1,15 @@
-﻿@model advanced_jobmatchingtool_webapp.ViewModels.Antwoorden.AntwoordKandidaatIndexViewModel
+﻿@model advanced_jobmatchingtool_webapp.ViewModels.Antwoorden.AntwoordKlantIndexViewModel
 
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2 class="text-primary">Personalia Kandidaat:</h2>
+<h2 class="text-primary">Behoeftes Klant:</h2>
 
 <p>@Model.Voornaam @Model.Familienaam</p>
 
-@using (Html.BeginForm("SaveAntwoorden", "PersonaliaKandidaat", FormMethod.Post))
+@using (Html.BeginForm("SaveAntwoorden", "BehoeftesKlant", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     <div class="table-responsive">
@@ -65,7 +65,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Opslaan</button>
-    <a asp-controller="HomeKandidaat" asp-action="Index" class="btn btn-secondary">Annuleren</a>
+    <a asp-controller="HomeKlant" asp-action="Index" class="btn btn-secondary">Annuleren</a>
 }
 
 <h3>Ingevoerde Antwoorden</h3>

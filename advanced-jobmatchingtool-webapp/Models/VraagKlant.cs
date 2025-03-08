@@ -15,6 +15,7 @@ namespace advanced_jobmatchingtool_webapp.Models
         [ValidateNever]
         public AntwoordOptie AntwoordOptie { get; set; }
 
+        [ValidateNever]
         public ICollection<AntwoordKlant> AntwoordenKlanten { get; set; }
     }
 }

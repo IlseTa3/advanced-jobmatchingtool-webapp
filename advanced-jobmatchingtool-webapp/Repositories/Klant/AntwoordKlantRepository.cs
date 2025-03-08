@@ -11,6 +11,13 @@ namespace advanced_jobmatchingtool_webapp.Repositories.Klant
             _context = context;
         }
 
+        public async Task<VraagKlant> GetVraagKlantByIdAsync(int id)
+        {
+            return await _context.VragenKlanten
+                .Include(vk => vk.Categorie)
+                .FirstOrDefaultAsync(vk => vk.Id == id);
+        }
+
         //Om vragen op te halen en te laten beantwoorden per categorie
         public async Task<List<VraagKlant>> GetVragenByCategorieAsync(int categorieId)
         {
@@ -28,6 +35,15 @@ namespace advanced_jobmatchingtool_webapp.Repositories.Klant
             return await _context.VragenKlanten
                 .Where(vk => vk.Categorie.NaamCategorie.Contains(categorie) ||
                         vk.Categorie.NaamSubCategorie.Contains(categorie))
+                .Include(vk => vk.Categorie)
+                .Include(vk => vk.AntwoordOptie)
+                .ToListAsync();
+        }
+
+        public async Task<List<VraagKlant>> GetVragenByNaamCategorieAsync(string categorie)
+        {
+            return await _context.VragenKlanten
+                .Where(vk => vk.Categorie.NaamCategorie == categorie)
                 .Include(vk => vk.Categorie)
                 .Include(vk => vk.AntwoordOptie)
                 .ToListAsync();

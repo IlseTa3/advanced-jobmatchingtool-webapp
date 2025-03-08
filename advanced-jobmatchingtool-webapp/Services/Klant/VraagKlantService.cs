@@ -36,7 +36,7 @@ namespace advanced_jobmatchingtool_webapp.Services.Klant
                 Id = v.Id,
                 VraagTekst = v.VraagText != null ? v.VraagText : "Geen Vraag",
                 Categorie = v.Categorie != null ? v.Categorie.NaamCategorie : "Geen Categorie",
-                SubCategorie = v.Categorie != null ? v.Categorie.NaamCategorie : "Geen SubCategorie",
+                SubCategorie = v.Categorie != null ? v.Categorie.NaamSubCategorie : "Geen SubCategorie",
                 AntwoordOptie = v.AntwoordOptie != null ? v.AntwoordOptie.OptieTekst : "Geen antwoordoptie",
                 SoortAntwoord = v.SoortAntwoord
             }).ToList();

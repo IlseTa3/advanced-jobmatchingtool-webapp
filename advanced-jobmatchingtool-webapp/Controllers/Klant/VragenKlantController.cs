@@ -9,7 +9,7 @@ using advanced_jobmatchingtool_webapp.Models;
 using Microsoft.AspNetCore.Authorization;
 using advanced_jobmatchingtool_webapp.Services.Klant;
 
-namespace advanced_jobmatchingtool_webapp.Controllers.Beheer
+namespace advanced_jobmatchingtool_webapp.Controllers.Klant
 {
     [Authorize(Roles = "Beheerder")]
     public class VragenKlantController : Controller

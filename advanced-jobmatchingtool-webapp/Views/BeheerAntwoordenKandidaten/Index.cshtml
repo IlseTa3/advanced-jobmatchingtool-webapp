@@ -1,0 +1,120 @@
+﻿@model IEnumerable<advanced_jobmatchingtool_webapp.ViewModels.Antwoorden.BeheerAntwoordKandidaatIndexViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    #custtable tbody tr {
+        cursor: pointer;
+        color: darkslategray;
+    }
+</style>
+
+<h1>Beheer: Verzamelde antwoorden kandidaten</h1>
+
+<p>Hier kan extra info toegevoegd worden door op een lijn in de tabel te klikken.</p>
+
+<table id="custtable" class="display cell-border compact">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserVoornaam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserFamilienaam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VraagTekst)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AntwoordTekst)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Categorie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExtraInfo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+        @*
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserVoornaam)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserFamilienaam)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VraagTekst)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AntwoordTekst)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Categorie)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExtraInfo)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+            </td>
+        </tr>
+}
+*@
+   
+</table>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.11/css/jquery.dataTables.css" />
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.js"></script>
+
+    <script>
+        $(function () {
+            $('#custtable').DataTable({
+                "ajax": {
+                    //Client Side
+                    "url": "/BeheerAntwoordenKandidaten/GetAllAntwoordenKandidatenData",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "userVoornaam" },
+                    { "data": "userFamilienaam" },
+                    { "data": "vraagTekst" },
+                    { "data": "antwoordTekst" },
+                    { "data": "categorie" },
+                    { "data": "extraInfo"},
+                ]
+
+            });
+
+            $('#custtable tbody').one('click', 'tr', function (e) {
+                e.preventDefault();
+                var id = $("td:first", this).text();
+                if ($(e.target).is("a.del")) {
+                    $.get('@Url.Action("Delete", "BeheerAntwoordenKandidaten")', { id: id }, function (data) {
+                        $("body").html(data);
+                    });
+                    return;
+                }
+                $.get('@Url.Action("Edit", "BeheerAntwoordenKandidaten")', { id: id }, function (data) {
+                    $("body").html(data);
+                })
+            });
+
+        });
+    </script>
+}
+
+<a asp-controller="HomeBeheer" asp-action="Index" class="btn btn-secondary">Terug</a>

@@ -1,0 +1,60 @@
+﻿@model advanced_jobmatchingtool_webapp.Models.AntwoordKlant
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Extra info toevoegen</h1>
+
+<h4>Antwoord van de Klant</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <!-- User (readonly) -->
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label">Voornaam - Familienaam</label>
+                <input type="text" class="form-control" value="@ViewBag.UserNaam" readonly />
+                <input type="hidden" asp-for="@Model.User.Voornaam"/>
+
+            </div>
+            <!-- Vraag (readonly) -->
+            <div class="form-group">
+                <label asp-for="VraagKlantId" class="control-label">Vraag</label>
+                <input type="text" class="form-control" value="@ViewBag.VraagTekst" readonly />
+                <input type="hidden" asp-for="VraagKlantId" />
+            </div>
+
+            <!-- Antwoord (readonly) -->
+            <div class="form-group">
+                <label asp-for="AntwoordTekst" class="control-label">Antwoord</label>
+                <input asp-for="AntwoordTekst" class="form-control" readonly />
+            </div>
+
+            <!-- Categorie (readonly) -->
+            <div class="form-group">
+                <label asp-for="Categorie" class="control-label">Categorie - Subcategorie</label>
+                <input asp-for="Categorie" class="form-control" readonly />
+            </div>
+
+            <!-- Extra Info (aanpasbaar) -->
+            <div class="form-group">
+                <label asp-for="ExtraInfo" class="control-label">Extra informatie</label>
+                <textarea asp-for="ExtraInfo" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="ExtraInfo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Opslaan" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

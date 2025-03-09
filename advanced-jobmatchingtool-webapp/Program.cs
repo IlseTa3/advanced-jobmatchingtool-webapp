@@ -46,6 +46,10 @@ builder.Services.AddScoped<IAntwoordKandidaatRepository, AntwoordKandidaatReposi
 builder.Services.AddScoped<IAntwoordKandidaatService, AntwoordKandidaatService>();
 builder.Services.AddScoped<IAntwoordKlantRepository, AntwoordKlantRepository>();
 builder.Services.AddScoped<IAntwoordKlantService,  AntwoordKlantService>();
+builder.Services.AddScoped<IBeheerAntwoordKandidaatRepository, BeheerAntwoordKandidaatRepository>();
+builder.Services.AddScoped<IBeheerAntwoordKandidaatService, BeheerAntwoordKandidaatService>();
+builder.Services.AddScoped<IBeheerAntwoordKlantRepository, BeheerAntwoordKlantRepository>();
+builder.Services.AddScoped<IBeheerAntwoordKlantService, BeheerAntwoordKlantService>();
 builder.Services.AddTransient<IEmailSender,EmailService>();
 
 builder.Logging.ClearProviders();

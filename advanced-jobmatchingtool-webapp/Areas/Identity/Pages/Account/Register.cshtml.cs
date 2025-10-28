@@ -109,16 +109,20 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
             [Display(Name = "Familienaam")]
             public string Lastname { get; set; }
 
-            
+            [Required(ErrorMessage = "Je moet akkoord gaan met de voorwaarden.")]
+            [Display(Name = "Ik ga akkoord met de algemene voorwaarden en privacyverklaring")]
+            public bool TermsCond { get; set; }
 
-            [Required]
-            [Display(Name = "Kandidaat of Klant")]
-            public string Role { get; set; }
+            //[Required]
+            //Role = "Voorlopige kandidaat"
+            //public string Role { get; set; }
 
+            /*
             [Display(Name = "Heb je een Individueel Maatwerk statuut?")]
             public bool HeeftIMWStatuut { get; set; }
             [Display(Name = "Uploaden bewijs van Individueel Maatwerk (PDF)")]
             public IFormFile IMWStatuutBestand { get; set; }
+            */
         }
 
 
@@ -140,8 +144,12 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 user.Voornaam = Input.Firstname;
                 user.Familienaam = Input.Lastname;
-              
-                user.Role = Input.Role;
+                user.TermsCond = Input.TermsCond;
+                user.ProfileComplete = false;
+
+                user.Role = "Voorlopige kandidaat"; // dit moet op "Voorlopige kandidaat" - rol komen
+
+                /*
                 if (Input.Role == "Kandidaat")
                 {
                     if (!Input.HeeftIMWStatuut || Input.IMWStatuutBestand == null)
@@ -149,7 +157,7 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
                         ModelState.AddModelError(string.Empty, "Kandidaten moeten een Individueel Maatwerk statuut hebben en een bewijs uploaden.");
                         return Page();
                     }
-
+                
                     //verwerken geuploade bestand
                     var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
                     var uniqueFilename = Guid.NewGuid().ToString() + "_" + Input.IMWStatuutBestand.FileName;
@@ -159,6 +167,7 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
                         await Input.IMWStatuutBestand.CopyToAsync(stream);
                     }
                 }
+                */
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -181,7 +190,7 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
                         $"Klik op onderstaande link om je e-mailadres te bevestigen: <br/> <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Bevestig je e-mailadres</a>.");
 
                     //rol toevoegen
-                    await _userManager.AddToRoleAsync(user, Input.Role);
+                    await _userManager.AddToRoleAsync(user, "Voorlopige kandidaat");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

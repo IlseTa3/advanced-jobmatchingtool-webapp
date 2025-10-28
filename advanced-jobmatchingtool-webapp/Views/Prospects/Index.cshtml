@@ -1,0 +1,101 @@
+﻿@model IEnumerable<advanced_jobmatchingtool_webapp.Models.Prospect>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NaamOnderneming)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NaamContactpersoon)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Btwnr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Adres)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Postcode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Stad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Land)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefoonnr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gsmnr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OmschrijvingOnderneming)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TermsCond)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NaamOnderneming)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NaamContactpersoon)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Btwnr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adres)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Postcode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Stad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Land)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telefoonnr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gsmnr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OmschrijvingOnderneming)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TermsCond)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,54 +1,60 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System.Net;
 using System.Net.Mail;
 
 namespace advanced_jobmatchingtool_webapp.Services.Beheer
 {
     public class EmailService : IEmailService, IEmailSender
     {
-        private readonly string _apiKey;
+        private readonly string _smtpHost;
+        private readonly int _smtpPort;
+        private readonly string _smtpUser;
+        private readonly string _smtpPass;
         private readonly string _senderEmail;
         private readonly string _senderName;
         private readonly ILogger<EmailService> _logger;
 
         public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
         {
-            _apiKey = configuration["SendGrid:ApiKey"];
-            _senderEmail = configuration["SendGrid:SenderEmail"];
-            _senderName = configuration["SendGrid:SenderName"];
+            _smtpHost = configuration["Smtp:Host"];
+            _smtpPort = int.Parse(configuration["Smtp:Port"]);
+            _smtpUser = configuration["Smtp:Username"];
+            _smtpPass = configuration["Smtp:Password"];
+            _senderEmail = configuration["Smtp:SenderEmail"];
+            _senderName = configuration["Smtp:SenderName"];
             _logger = logger;
-            _logger.LogInformation("EmailService geconfigureerd. Sender:{SenderEmail}, API Key Length:{ApiKeyLength}, API KEY: {ApiKey}",
-                _senderEmail, _apiKey?.Length ?? 0, _apiKey);
         }
 
         public async Task SendEmailAsync(string recipientEmail, string subject, string message)
         {
             try
             {
-                var client = new SendGridClient(_apiKey);
-                var from = new EmailAddress(_senderEmail, _senderName);
-                var to = new EmailAddress(recipientEmail);
-                var msg = MailHelper.CreateSingleEmail(from, to, subject, message, message);
-
-                var response = await client.SendEmailAsync(msg);
-
-                if ((int)response.StatusCode >= 200 && (int)response.StatusCode < 300)
+                var mail = new MailMessage
                 {
-                    _logger.LogInformation("E-mail succesvol verzonden naar {RecipientEmail}", recipientEmail);
-                }
-                else
+                    From = new MailAddress(_senderEmail, _senderName),
+                    Subject = subject,
+                    Body = message,
+                    IsBodyHtml = true
+                };
+                mail.To.Add(recipientEmail);
+
+                using var smtp = new SmtpClient(_smtpHost, _smtpPort)
                 {
-                    var errorMessage = $"Fout bij het verzenden van e-mail: {response.StatusCode}";
-                    _logger.LogError(errorMessage);
-                    throw new Exception(errorMessage);
-                }
+                    Credentials = new NetworkCredential(_smtpUser, _smtpPass),
+                    EnableSsl = true
+                };
+
+                await smtp.SendMailAsync(mail);
+                _logger.LogInformation("E-mail succesvol verzonden naar {RecipientEmail}", recipientEmail);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Er trad een fout op tijdens het verzenden van een e-mail.");
+                _logger.LogError(ex, "Fout bij het verzenden van e-mail via SMTP.");
                 throw;
             }
         }
     }
+
 }

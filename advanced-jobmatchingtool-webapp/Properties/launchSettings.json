@@ -33,6 +33,10 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "environmentVariables": {
+      "Smtp__Username": "noreply@mailer.opusaptus.be",
+      "Smtp__Password": "lVCtmOfr5OVr"
     }
   }
 }

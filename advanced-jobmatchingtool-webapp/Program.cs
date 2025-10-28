@@ -50,6 +50,9 @@ builder.Services.AddScoped<IBeheerAntwoordKandidaatRepository, BeheerAntwoordKan
 builder.Services.AddScoped<IBeheerAntwoordKandidaatService, BeheerAntwoordKandidaatService>();
 builder.Services.AddScoped<IBeheerAntwoordKlantRepository, BeheerAntwoordKlantRepository>();
 builder.Services.AddScoped<IBeheerAntwoordKlantService, BeheerAntwoordKlantService>();
+builder.Services.AddScoped<IProspectRepository, ProspectRepository>();
+builder.Services.AddScoped<IProspectService, ProspectService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<IEmailSender,EmailService>();
 
 builder.Logging.ClearProviders();
@@ -70,6 +73,7 @@ var serviceProvider = app.Services.CreateScope().ServiceProvider;
 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
 await roleManager.CreateAsync(new IdentityRole("Kandidaat"));
+await roleManager.CreateAsync(new IdentityRole("Voorlopige kandidaat"));
 await roleManager.CreateAsync(new IdentityRole("Beheerder"));
 await roleManager.CreateAsync(new IdentityRole("Klant"));
 

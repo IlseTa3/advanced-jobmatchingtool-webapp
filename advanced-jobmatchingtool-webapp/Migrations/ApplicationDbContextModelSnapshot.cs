@@ -272,12 +272,6 @@ namespace advanced_jobmatchingtool_webapp.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool?>("HeefIMWStatuut")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("IMWStatuutBestand")
-                        .HasColumnType("longtext");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
 
@@ -301,12 +295,18 @@ namespace advanced_jobmatchingtool_webapp.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("ProfileComplete")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("TermsCond")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
@@ -349,6 +349,140 @@ namespace advanced_jobmatchingtool_webapp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CategorieSubCats");
+                });
+
+            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.PersonaliaKandidaat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Gsmnr")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Land")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Postcode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Stad")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Telnr")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
+
+                    b.ToTable("Personalia");
+                });
+
+            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.Prospect", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Adres")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Btwnr")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Gsmnr")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Land")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NaamContactpersoon")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NaamOnderneming")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("OmschrijvingOnderneming")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Postcode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Stad")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Telefoonnr")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("TermsCond")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Prospecten");
+                });
+
+            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.StatuutKandidaat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Diagnose")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("HeeftIMWStatuut")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("HulpNodigBijInvullen")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("IMWStatuutBestand")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
+
+                    b.ToTable("Statuten");
                 });
 
             modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.VraagKandidaat", b =>
@@ -500,6 +634,28 @@ namespace advanced_jobmatchingtool_webapp.Migrations
                     b.Navigation("VraagKlant");
                 });
 
+            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.PersonaliaKandidaat", b =>
+                {
+                    b.HasOne("advanced_jobmatchingtool_webapp.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("Personalia")
+                        .HasForeignKey("advanced_jobmatchingtool_webapp.Models.PersonaliaKandidaat", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.StatuutKandidaat", b =>
+                {
+                    b.HasOne("advanced_jobmatchingtool_webapp.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("Statuut")
+                        .HasForeignKey("advanced_jobmatchingtool_webapp.Models.StatuutKandidaat", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.VraagKandidaat", b =>
                 {
                     b.HasOne("advanced_jobmatchingtool_webapp.Models.AntwoordOptie", "AntwoordOptie")
@@ -541,6 +697,15 @@ namespace advanced_jobmatchingtool_webapp.Migrations
                     b.Navigation("VragenKandidaten");
 
                     b.Navigation("VragenKlanten");
+                });
+
+            modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Personalia")
+                        .IsRequired();
+
+                    b.Navigation("Statuut")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("advanced_jobmatchingtool_webapp.Models.CategorieSubCat", b =>

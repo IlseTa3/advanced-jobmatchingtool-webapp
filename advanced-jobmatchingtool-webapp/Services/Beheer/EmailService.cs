@@ -1,60 +1,51 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using SendGrid;
-using SendGrid.Helpers.Mail;
-using System.Net;
-using System.Net.Mail;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.Extensions.Logging;
 
-namespace advanced_jobmatchingtool_webapp.Services.Beheer
+public class EmailService
 {
-    public class EmailService : IEmailService, IEmailSender
+    private readonly IConfiguration _config;
+    private readonly ILogger<EmailService> _logger;
+
+    public EmailService(IConfiguration config, ILogger<EmailService> logger)
     {
-        private readonly string _smtpHost;
-        private readonly int _smtpPort;
-        private readonly string _smtpUser;
-        private readonly string _smtpPass;
-        private readonly string _senderEmail;
-        private readonly string _senderName;
-        private readonly ILogger<EmailService> _logger;
-
-        public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
-        {
-            _smtpHost = configuration["Smtp:Host"];
-            _smtpPort = int.Parse(configuration["Smtp:Port"]);
-            _smtpUser = configuration["Smtp:Username"];
-            _smtpPass = configuration["Smtp:Password"];
-            _senderEmail = configuration["Smtp:SenderEmail"];
-            _senderName = configuration["Smtp:SenderName"];
-            _logger = logger;
-        }
-
-        public async Task SendEmailAsync(string recipientEmail, string subject, string message)
-        {
-            try
-            {
-                var mail = new MailMessage
-                {
-                    From = new MailAddress(_senderEmail, _senderName),
-                    Subject = subject,
-                    Body = message,
-                    IsBodyHtml = true
-                };
-                mail.To.Add(recipientEmail);
-
-                using var smtp = new SmtpClient(_smtpHost, _smtpPort)
-                {
-                    Credentials = new NetworkCredential(_smtpUser, _smtpPass),
-                    EnableSsl = true
-                };
-
-                await smtp.SendMailAsync(mail);
-                _logger.LogInformation("E-mail succesvol verzonden naar {RecipientEmail}", recipientEmail);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Fout bij het verzenden van e-mail via SMTP.");
-                throw;
-            }
-        }
+        _config = config;
+        _logger = logger;
     }
 
+    public async Task<bool> SendEmailAsync(string toName, string toEmail, string subject, string message)
+    {
+        try
+        {
+            _logger.LogInformation("Start verzending van e-mail naar {ToEmail} met onderwerp '{Subject}'", toEmail, subject);
+
+            var email = new MimeMessage();
+            email.From.Add(new MailboxAddress(_config["SMTP_SENDERNAME"], _config["SMTP_SENDEREMAIL"]));
+            email.To.Add(new MailboxAddress(toName, toEmail));
+            email.Subject = subject;
+            email.Body = new TextPart("html") { Text = message };
+
+            using var smtp = new SmtpClient();
+            smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+            _logger.LogInformation("Verbinding maken met SMTP server {Host}:{Port}", _config["SMTP_HOST"], _config["SMTP_PORT"]);
+            await smtp.ConnectAsync(_config["SMTP_HOST"], int.Parse(_config["SMTP_PORT"]), MailKit.Security.SecureSocketOptions.StartTls);
+
+            _logger.LogInformation("Authenticatie met SMTP gebruiker {User}", _config["SMTP_USERNAME"]);
+            await smtp.AuthenticateAsync(_config["SMTP_USERNAME"], _config["SMTP_PASSWORD"]);
+
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
+
+            _logger.LogDebug("Sender: {Name} <{Email}>", _config["SMTP_SENDERNAME"], _config["SMTP_SENDEREMAIL"]);
+
+            _logger.LogInformation("E-mail succesvol verzonden naar {ToEmail}", toEmail);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Fout bij verzenden van e-mail naar {ToEmail}", toEmail);
+            return false;
+        }
+    }
 }

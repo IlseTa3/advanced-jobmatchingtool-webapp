@@ -52,8 +52,10 @@ builder.Services.AddScoped<IBeheerAntwoordKlantRepository, BeheerAntwoordKlantRe
 builder.Services.AddScoped<IBeheerAntwoordKlantService, BeheerAntwoordKlantService>();
 builder.Services.AddScoped<IProspectRepository, ProspectRepository>();
 builder.Services.AddScoped<IProspectService, ProspectService>();
-builder.Services.AddTransient<IEmailService, EmailService>();
-builder.Services.AddTransient<IEmailSender,EmailService>();
+builder.Services.AddScoped<IPersonaliaKandidaatRepository, PersonaliaKandidaatRepository>();
+builder.Services.AddScoped<IStatuutKandidaatRepository,  StatuutKandidaatRepository>();
+builder.Services.AddScoped<IKandidaatService, KandidaatService>();
+builder.Services.AddSingleton<EmailService>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -78,6 +80,23 @@ await roleManager.CreateAsync(new IdentityRole("Beheerder"));
 await roleManager.CreateAsync(new IdentityRole("Klant"));
 
 var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+var kandidaatUser = new ApplicationUser
+{
+    Voornaam = "Marie",
+    Familienaam = "Desmet",
+    UserName = "mariedesmet@gmail.com",
+    Email = "mariedesmet@gmail.com",
+    EmailConfirmed = true,
+    Role = "Voorlopige kandidaat",
+    TermsCond = true
+};
+
+var result = await userManager.CreateAsync(kandidaatUser, "OpusAptus123!");
+if (result.Succeeded)
+{
+    await userManager.AddToRoleAsync(kandidaatUser, "Voorlopige Kandidaat");
+}
 
 //Klant 1
 /*var klant1User = new ApplicationUser

@@ -37,6 +37,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="HomeKandidaat" asp-action="Index">Overzichtspagina Kandidaat</a>
                             </li>
                         }
+                        @if (User.IsInRole("Voorlopige kandidaat"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Kandidaat" asp-action="Profiel">Profielpagina</a>
+                            </li>
+                        }
                         @if (User.IsInRole("Klant"))
                         {
                             <li class="nav-item">

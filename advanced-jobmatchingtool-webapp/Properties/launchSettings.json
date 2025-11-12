@@ -24,7 +24,14 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7288;http://localhost:5180",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SMTP_HOST": "smtp.improvmx.com",
+        "SMTP_PORT": "587",
+        "SMTP_USERNAME": "noreply@mailer.opusaptus.be",
+        "SMTP_PASSWORD": "Vo8fj0obA8CJ",
+        "SMTP_SENDEREMAIL": "noreply@mailer.opusaptus.be",
+        "SMTP_SENDERNAME": "Opus Aptus Platform"
+
       }
     },
     "IIS Express": {
@@ -32,11 +39,9 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+        
       }
-    },
-    "environmentVariables": {
-      "Smtp__Username": "noreply@mailer.opusaptus.be",
-      "Smtp__Password": "Vo8fj0obA8CJ"
     }
+   
   }
 }

@@ -15,10 +15,10 @@ namespace advanced_jobmatchingtool_webapp.Controllers.Klant
     public class ProspectsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IEmailService _emailService;
+        private readonly EmailService _emailService;
         private readonly IProspectService _prospectService;
 
-        public ProspectsController(ApplicationDbContext context,IEmailService emailService,IProspectService prospectService)
+        public ProspectsController(ApplicationDbContext context,EmailService emailService,IProspectService prospectService)
         {
             _context = context;
             _emailService = emailService;
@@ -70,10 +70,30 @@ namespace advanced_jobmatchingtool_webapp.Controllers.Klant
             {
                 await _prospectService.CreateProspectAsync(prospect);
 
-                await _emailService.SendEmailAsync(prospect.Email, "Bevestiging van contactaanvraag",
-                        $"Beste {prospect.NaamContactpersoon}, <br/><br/> Bedankt voor je interesse in Opus Aptus. We nemen zo spoedig mogelijk contact met je op." +
-                            "<br/><br/> Met vriendelijke groet, <br/> Het Opus Aptus Team"
-                    );
+                var naam = prospect.NaamContactpersoon;
+                var email = prospect.Email;
+                var onderwerp = "Bevestiging van contactaanvraag";
+                var bericht = $@"
+                                Beste {prospect.NaamContactpersoon},<br/><br/>
+                                Bedankt voor je contactaanvraag bij Opus Aptus. Hieronder vind je een overzicht van de gegevens die je hebt ingevuld:<br/><br/>
+
+                                <b>Naam onderneming:</b> {prospect.NaamOnderneming}<br/>
+                                <b>Contactpersoon:</b> {prospect.NaamContactpersoon}<br/>
+                                <b>BTW-nummer:</b> {prospect.Btwnr}<br/>
+                                <b>Adres:</b> {prospect.Adres}, {prospect.Postcode} {prospect.Stad}, {prospect.Land}<br/>
+                                <b>Telefoonnummer:</b> {prospect.Telefoonnr}<br/>
+                                <b>GSM-nummer:</b> {prospect.Gsmnr}<br/>
+                                <b>Email:</b> {prospect.Email}<br/>
+                                <b>Omschrijving onderneming:</b><br/>
+                                {prospect.OmschrijvingOnderneming}<br/><br/>
+                                Indien er iets niet klopt, mag je ons gerust contacteren via dit e-mailadres.<br/><br/>
+                                Met vriendelijke groet,<br/>
+                                Het Opus Aptus Team
+                                ";
+
+
+                await _emailService.SendEmailAsync(naam, email, onderwerp, bericht);
+
 
                 return RedirectToAction(nameof(Bevestiging));
             }

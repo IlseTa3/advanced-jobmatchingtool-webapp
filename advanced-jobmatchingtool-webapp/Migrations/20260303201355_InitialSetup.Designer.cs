@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using advanced_jobmatchingtool_webapp.Models;
@@ -11,9 +12,11 @@ using advanced_jobmatchingtool_webapp.Models;
 namespace advanced_jobmatchingtool_webapp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260303201355_InitialSetup")]
+    partial class InitialSetup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -474,10 +477,6 @@ namespace advanced_jobmatchingtool_webapp.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("IMWStatuutBestand")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("IMWStatuutBestandOrigineleNaam")
                         .IsRequired()
                         .HasColumnType("text");
 

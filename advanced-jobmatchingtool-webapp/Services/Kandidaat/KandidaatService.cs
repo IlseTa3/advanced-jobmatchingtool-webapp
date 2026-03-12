@@ -45,7 +45,34 @@ namespace advanced_jobmatchingtool_webapp.Services.Kandidaat
                     Diagnose = statuut.Diagnose,
                     HeeftIMWStatuut = statuut.HeeftIMWStatuut,
                     HulpNodigBijInvullen = statuut.HulpNodigBijInvullen,
-                    BestaandeBestanden = statuut.IMWStatuutBestand?.Split(',').ToList() ?? new List<string>()
+                    BestaandeBestanden = statuut.IMWStatuutBestand?
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(b =>
+                        {
+                            var delen = b.Split('|');
+                            //nieuw formaat
+                            if(delen.Length == 2)
+                            {
+                                return new BestandViewModel
+                                {
+                                    UniekeNaam = delen[0],
+                                    OrigineleNaam = delen[1]
+                                };
+                            }
+                            if(delen.Length == 1)
+                            {
+                                //oud formaat, alleen unieke naam
+                                return new BestandViewModel
+                                {
+                                    UniekeNaam = delen[0],
+                                    OrigineleNaam = delen[0]
+                                };
+                            }
+                            //corrupt formaat, negeren
+                            return null;
+                        })
+                        .Where(b => b != null)
+                        .ToList() ?? new List<BestandViewModel>()
                 }
             };
         }
@@ -53,24 +80,44 @@ namespace advanced_jobmatchingtool_webapp.Services.Kandidaat
         public async Task<bool> SaveProfielAsync(KandidaatProfielViewModel model, string userId)
         {
             //Personalia opslaan
-            var personaliaEntity = await _personaliaRepo.GetPersonaliaByUserIdAsync(userId) ?? new PersonaliaKandidaat { ApplicationUserId = userId};
-            personaliaEntity.ApplicationUserId = userId;
+            var personaliaEntity = await _personaliaRepo.GetPersonaliaByUserIdAsync(userId);
+                if (personaliaEntity == null)
+                {
+                    personaliaEntity = new PersonaliaKandidaat { ApplicationUserId = userId };
+            }
+            
             personaliaEntity.Gsmnr = model.Personalia.Gsmnr;
             personaliaEntity.Telnr = model.Personalia.Telnr;
             personaliaEntity.Postcode = model.Personalia.Postcode;
             personaliaEntity.Stad = model.Personalia.Stad;
             personaliaEntity.Land = model.Personalia.Land;
 
-            await _personaliaRepo.CreatePersonaliaForKandidaatAsync(personaliaEntity);
+            //opslaan
+            if (personaliaEntity.Id == 0) 
+            {
+                await _personaliaRepo.CreatePersonaliaForKandidaatAsync(personaliaEntity);
+            }
+            else
+            {
+                await _personaliaRepo.UpdatePersonaliaForKandidaatAsync(personaliaEntity);
+            }
 
             //Statuut opslaan
 
-            var statuutEntity = await _statuutRepo.GetStatuutFromKandidaatByUserIdAsync(userId) ?? new StatuutKandidaat { ApplicationUserId = userId };
-            ;
-            statuutEntity.ApplicationUserId = userId;
+            var statuutEntity = await _statuutRepo.GetStatuutFromKandidaatByUserIdAsync(userId);
+            bool isNewStatuut = false;
+            if (statuutEntity == null)
+            {
+                statuutEntity = new StatuutKandidaat { ApplicationUserId = userId };
+                isNewStatuut = true;
+            }
+
+            
             statuutEntity.Diagnose = model.Statuut.Diagnose;
             statuutEntity.HeeftIMWStatuut = model.Statuut.HeeftIMWStatuut;
             statuutEntity.HulpNodigBijInvullen = model.Statuut.HulpNodigBijInvullen;
+
+            
 
             //Bestanden verwerken
 
@@ -87,13 +134,14 @@ namespace advanced_jobmatchingtool_webapp.Services.Kandidaat
                     if (!toegestaneExtensies.Contains(extensie) || bestand.Length > 20 * 1024 * 1024)
                         continue;
 
+                    var origineleNaam = Path.GetFileName(bestand.FileName);
                     var uniekeNaam = Guid.NewGuid().ToString() + extensie;
                     var pad = Path.Combine(uploadPad, uniekeNaam);
                     using (var stream = new FileStream(pad, FileMode.Create))
                     {
                         await bestand.CopyToAsync(stream);
                     }
-                    bestandsnamen.Add(uniekeNaam);
+                    bestandsnamen.Add($"{uniekeNaam}|{origineleNaam}");
                 }
 
             }
@@ -102,11 +150,20 @@ namespace advanced_jobmatchingtool_webapp.Services.Kandidaat
             {
                 statuutEntity.IMWStatuutBestand = string.Join(",", bestandsnamen);
             }
-            
-            await _statuutRepo.CreateStatuutForKandidaatAsync(statuutEntity);
 
-            // Profielstatus en rolwijziging
-            var user = await _userManager.FindByIdAsync(userId);
+            //Create/Update statuut
+            if (isNewStatuut)
+            {
+                await _statuutRepo.CreateStatuutForKandidaatAsync(statuutEntity);
+            }
+            else
+            {
+                await _statuutRepo.UpdateStatuutForKandidaatAsync(statuutEntity);
+            }
+
+
+                // Profielstatus en rolwijziging
+                var user = await _userManager.FindByIdAsync(userId);
             if (IsProfielVolledig(personaliaEntity, statuutEntity))
             {
                 user.ProfileComplete = true;

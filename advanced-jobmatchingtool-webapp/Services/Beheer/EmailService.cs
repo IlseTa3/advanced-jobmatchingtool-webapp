@@ -23,13 +23,13 @@ public class EmailService
             email.From.Add(new MailboxAddress(_config["SMTP_SENDERNAME"], _config["SMTP_SENDEREMAIL"]));
             email.To.Add(new MailboxAddress(toName, toEmail));
             email.Subject = subject;
-            email.Body = new TextPart("html") { Text = message };
+            email.Body = new TextPart("plain") { Text = message };
 
             using var smtp = new SmtpClient();
             smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
             _logger.LogInformation("Verbinding maken met SMTP server {Host}:{Port}", _config["SMTP_HOST"], _config["SMTP_PORT"]);
-            await smtp.ConnectAsync(_config["SMTP_HOST"], int.Parse(_config["SMTP_PORT"]), MailKit.Security.SecureSocketOptions.StartTls);
+            await smtp.ConnectAsync(_config["SMTP_HOST"], int.Parse(_config["SMTP_PORT"]), MailKit.Security.SecureSocketOptions.SslOnConnect);
 
             _logger.LogInformation("Authenticatie met SMTP gebruiker {User}", _config["SMTP_USERNAME"]);
             await smtp.AuthenticateAsync(_config["SMTP_USERNAME"], _config["SMTP_PASSWORD"]);

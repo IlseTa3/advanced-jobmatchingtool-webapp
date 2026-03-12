@@ -15,8 +15,9 @@ namespace advanced_jobmatchingtool_webapp.Models
         //beveiliging IMW + uploaden bestand.
         //Opslag van bestandsnamen of paden voor statuten
         public string IMWStatuutBestand { get; set; }
+        public string IMWStatuutBestandOrigineleNaam { get; set; }
 
-        
+
         public bool HulpNodigBijInvullen { get; set; }
 
         [Required]

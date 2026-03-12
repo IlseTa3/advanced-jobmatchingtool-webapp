@@ -9,7 +9,7 @@ using advanced_jobmatchingtool_webapp.Models;
 using Microsoft.AspNetCore.Authorization;
 using advanced_jobmatchingtool_webapp.Services.Kandidaat;
 
-namespace advanced_jobmatchingtool_webapp.Controllers.Kandidaat
+namespace advanced_jobmatchingtool_webapp.Controllers.Beheer
 {
     [Authorize(Roles = "Beheerder")]
     public class VragenKandidaatController : Controller

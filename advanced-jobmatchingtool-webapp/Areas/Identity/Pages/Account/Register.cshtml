@@ -2,7 +2,7 @@
 @using AdvancedJobmatchingTool.Areas.Identity.Pages.Account
 @model RegisterModel
 @{
-    ViewData["Title"] = "Registratie";
+    ViewData["Title"] = "Registratie Kandidaat";
 }
 
 <style>
@@ -27,6 +27,10 @@
         margin-bottom: 0.7em;
         font-weight: bolder;
     }
+
+    button {
+        margin-top:1em;
+    }
 </style>
 
 <h1>@ViewData["Title"]</h1>
@@ -34,7 +38,7 @@
 
 <div class="col-md-4">
     <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
-        <h2>Maak een nieuw account aan.</h2>
+        <h2>Maak een nieuwe account aan.</h2>
         <hr />
         <div class="form-floating mb-3">
             <input asp-for="Input.Firstname" class="form-control" aria-required="true" placeholder="Firstname" />
@@ -65,7 +69,7 @@
         <div class="form-check">
             <input asp-for="Input.TermsCond" class="form-check-input" type="checkbox" />
             <label asp-for="Input.TermsCond" class="form-check-label">
-                Ik ga akkoord met de <a href="/voorwaarden" target="_blank">algemene voorwaarden</a> en <a href="/privacy" target="_blank">privacyverklaring</a>.
+                Ik ga akkoord met de <a asp-controller="home" asp-action="privacy">algemene voorwaarden en privacyverklaring</a>.
             </label>
             <span asp-validation-for="Input.TermsCond" class="text-danger"></span>
         </div>

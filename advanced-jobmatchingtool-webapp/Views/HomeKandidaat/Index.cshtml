@@ -1,26 +1,64 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "Overzicht Kandidaat";
 }
 
-<h1>Overzicht Kandidaat</h1>
+<div class="container mt-4">
 
-<p>
-    In dit overzicht kan je zien welke vragen je kan beantwoorden en waar je moet zijn. Je kan hiervoor
-    op onderstaande links klikken. De vragen werden samengevoegd per categorie.
-</p>
+    <h2 class="text-primary mb-3">Overzicht voor kandidaten</h2>
 
-<p>
-    Neem rustig je tijd om in elke categorie je vragen te beantwoorden. Je hoeft niet alles ineens te beantwoorden,
-    je kan dit per categorie doen. Je kan steeds op de Annuleren-knop klikken als je wil teruggaan naar de Homepagina.
-</p>
+    <div class="alert alert-info">
+        <p class="mb-1">
+            In dit overzicht vind je alle categorieën van vragen die je kan invullen.
+        </p>
+        <p class="mb-0">
+            Je hoeft niet alles in één keer te doen. Je kan per categorie werken en op elk moment pauzeren.
+        </p>
+    </div>
 
-<ul>
-    <li><a asp-controller="PersonaliaKandidaat" asp-action="Index">Personalia</a></li>
-    <li><a asp-controller="StudiesKandidaat" asp-action="Index">Studies</a></li>
-    <li><a asp-controller="WerkKandidaat" asp-action="Index">Werkgerelateerde vragen</a></li>
-    <li><a asp-controller="BehoeftesKandidaat" asp-action="Index">Jouw behoeftes</a></li>
-    <li><a asp-controller="TriggersKandidaat" asp-action="Index">Jouw triggers</a></li>
-    <li><a asp-controller="StressKandidaat" asp-action="Index">Stressgerelateerde vragen</a></li>
-</ul>
+    <h4 class="text-primary mt-4 mb-3">Vragenlijsten per categorie</h4>
 
+    <div class="list-group mb-4">
+
+        <a asp-controller="StudiesKandidaat" asp-action="Index"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span>Studies</span>
+            <span class="badge bg-primary rounded-pill">Start</span>
+        </a>
+
+        <a asp-controller="WerkKandidaat" asp-action="Index"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span>Werkgerelateerde vragen</span>
+            <span class="badge bg-primary rounded-pill">Start</span>
+        </a>
+
+        <a asp-controller="BehoeftesKandidaat" asp-action="Index"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span>Jouw behoeftes</span>
+            <span class="badge bg-primary rounded-pill">Start</span>
+        </a>
+
+        <a asp-controller="TriggersKandidaat" asp-action="Index"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span>Jouw triggers</span>
+            <span class="badge bg-primary rounded-pill">Start</span>
+        </a>
+
+        <a asp-controller="StressKandidaat" asp-action="Index"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span>Stressgerelateerde vragen</span>
+            <span class="badge bg-primary rounded-pill">Start</span>
+        </a>
+
+    </div>
+
+    <h4 class="text-primary mt-4 mb-3">Persoonlijke gegevens</h4>
+
+    <p class="mb-2">
+        Wil je je persoonlijke gegevens aanpassen?
+    </p>
+
+    <a asp-controller="Kandidaat" asp-action="Profiel" class="btn btn-secondary">
+        Persoonlijke gegevens aanpassen
+    </a>
+
+</div>

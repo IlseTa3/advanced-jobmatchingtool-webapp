@@ -25,6 +25,6 @@ namespace advanced_jobmatchingtool_webapp.ViewModels.Kandidaat
 
         //Optioneel
         [ValidateNever]
-        public List<string> BestaandeBestanden { get; set; } = new List<string>();
+        public List<BestandViewModel> BestaandeBestanden { get; set; } = new();
     }
 }

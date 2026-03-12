@@ -25,11 +25,12 @@
       "applicationUrl": "https://localhost:7288;http://localhost:5180",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "SMTP_HOST": "smtp.improvmx.com",
-        "SMTP_PORT": "587",
-        "SMTP_USERNAME": "noreply@mailer.opusaptus.be",
-        "SMTP_PASSWORD": "Vo8fj0obA8CJ",
-        "SMTP_SENDEREMAIL": "noreply@mailer.opusaptus.be",
+        "SMTP_HOST": "smtp-auth.mailprotect.be",
+        "SMTP_PORT": "465",
+        "SMTP_SSL": "true",
+        "SMTP_USERNAME": "opusaptus@it-softwareanddata-development.be",
+        "SMTP_PASSWORD": "75UNa5I1Z4t82f06s318",
+        "SMTP_SENDEREMAIL": "opusaptus@it-softwareanddata-development.be",
         "SMTP_SENDERNAME": "Opus Aptus Platform"
 
       }

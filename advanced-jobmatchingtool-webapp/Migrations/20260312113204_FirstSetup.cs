@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace advanced_jobmatchingtool_webapp.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialSetup : Migration
+    public partial class FirstSetup : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -246,6 +246,7 @@ namespace advanced_jobmatchingtool_webapp.Migrations
                     Diagnose = table.Column<string>(type: "text", nullable: false),
                     HeeftIMWStatuut = table.Column<bool>(type: "boolean", nullable: false),
                     IMWStatuutBestand = table.Column<string>(type: "text", nullable: false),
+                    IMWStatuutBestandOrigineleNaam = table.Column<string>(type: "text", nullable: false),
                     HulpNodigBijInvullen = table.Column<bool>(type: "boolean", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "text", nullable: false)
                 },

@@ -12,8 +12,8 @@ using advanced_jobmatchingtool_webapp.Models;
 namespace advanced_jobmatchingtool_webapp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260304215233_Aanpassing-Statuut")]
-    partial class AanpassingStatuut
+    [Migration("20260312113204_FirstSetup")]
+    partial class FirstSetup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -23,7 +23,7 @@ public class EmailService
             email.From.Add(new MailboxAddress(_config["SMTP_SENDERNAME"], _config["SMTP_SENDEREMAIL"]));
             email.To.Add(new MailboxAddress(toName, toEmail));
             email.Subject = subject;
-            email.Body = new TextPart("plain") { Text = message };
+            email.Body = new TextPart("html") { Text = message };
 
             using var smtp = new SmtpClient();
             smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;

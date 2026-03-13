@@ -5,73 +5,105 @@
     ViewData["Title"] = "Index";
 }
 
-<h2 class="text-primary">Studies Kandidaat:</h2>
 
-<p>@Model.Voornaam @Model.Familienaam</p>
+<div class="container mt-4">
 
-@using (Html.BeginForm("SaveAntwoorden", "StudiesKandidaat", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-    <div class="table-responsive">
-        <table class="table table-bordered border-primary">
-            <thead class="text-center">
+    <h2 class="mb-3 text-center border-bottom">Vragen over studies</h2>
+
+    <p class="fw-bold">@Model.Voornaam @Model.Familienaam</p>
+
+    <div class="text-danger fw-bold alert-info text-center mb-4">
+        Vul onderstaande vragen in. <br />
+        Weet je niet wat je moet invullen? Je mag de vraag overslaan of, indien de optie er staat,
+        antwoorden met <strong style="color:darkblue;">Ik weet het niet</strong>.
+    </div>
+
+    @using (Html.BeginForm("SaveAntwoorden", "StudiesKandidaat", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <table class="table table-striped align-middle">
+            <thead class="table-primary text-center">
                 <tr>
-                    <th>Vraag</th>
-                    <th>Antwoord</th>
+                    <th style="white-space;nowrap;width: 60%;">Vraag</th>
+                    <th style="width: 40%;">Antwoord</th>
                 </tr>
             </thead>
+
             <tbody>
                 @for (int i = 0; i < Model.VragenAntwoorden.Count; i++)
                 {
                     <tr>
-                        <td id="vraag">
-                            @Model.VragenAntwoorden[i].VraagText
+                        <td>
+                            <div class="fw-semibold">@Model.VragenAntwoorden[i].VraagText</div>
+
+                            @if (!string.IsNullOrEmpty(Model.VragenAntwoorden[i].Categorie))
+                            {
+                                <div class="text-muted small">@Model.VragenAntwoorden[i].Categorie</div>
+                            }
+
                             <input type="hidden" name="vragenAntwoorden[@i].VraagId" value="@Model.VragenAntwoorden[i].VraagId" />
                             <input type="hidden" name="vragenAntwoorden[@i].UserId" value="@Model.UserId" />
                             <input type="hidden" name="vragenAntwoorden[@i].Type" value="@Model.VragenAntwoorden[i].Type" />
-                            @if (!string.IsNullOrEmpty(Model.VragenAntwoorden[i].ExtraInformatie))
-                            {
-                                <p><em>@Model.VragenAntwoorden[i].ExtraInformatie</em></p>
-                            }
                         </td>
-                        <td>
+
+                        <td class="text-center">
+
                             @if (Model.VragenAntwoorden[i].Type == "Radiobuttons")
                             {
-                                foreach (var optie in Model.VragenAntwoorden[i].Opties)
-                                {
-                                    <label>
-                                        <input type="radio" name="vragenAntwoorden[@i].Antwoord" value="@optie" @(Model.VragenAntwoorden[i].Antwoord == optie ? "checked" : "") /> @optie
-                                    </label>
-                                }
+                                <div class="d-flex justify-content-center gap-3">
+                                    @foreach (var optie in Model.VragenAntwoorden[i].Opties)
+                                    {
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"
+                                                   name="vragenAntwoorden[@i].Antwoord"
+                                                   value="@optie"
+                                                   @(Model.VragenAntwoorden[i].Antwoord == optie ? "checked" : "") />
+                                            <label class="form-check-label">@optie</label>
+                                        </div>
+                                    }
+                                </div>
                             }
                             else if (Model.VragenAntwoorden[i].Type == "Checkboxen")
                             {
-                                foreach (var optie in Model.VragenAntwoorden[i].Opties)
-                                {
-                                    <label>
-                                        <input type="checkbox" name="vragenAntwoorden[@i].Antwoorden" value="@optie" @(Model.VragenAntwoorden[i].Antwoorden != null && Model.VragenAntwoorden[i].Antwoorden.Contains(optie) ? "checked" : "") /> @optie
-                                    </label>
-                                }
+                                <div class="d-flex flex-column align-items-start ms-4">
+                                    @foreach (var optie in Model.VragenAntwoorden[i].Opties)
+                                    {
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   name="vragenAntwoorden[@i].Antwoorden"
+                                                   value="@optie"
+                                                   @(Model.VragenAntwoorden[i].Antwoorden != null && Model.VragenAntwoorden[i].Antwoorden.Contains(optie) ? "checked" : "") />
+                                            <label class="form-check-label">@optie</label>
+                                        </div>
+                                    }
+                                </div>
                             }
                             else
                             {
-                                <input type="text" name="vragenAntwoorden[@i].Antwoord" class="form-control" value="@Model.VragenAntwoorden[i].Antwoord" />
+                                <input type="text" class="form-control"
+                                       name="vragenAntwoorden[@i].Antwoord"
+                                       value="@Model.VragenAntwoorden[i].Antwoord" />
                             }
+
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-    </div>
 
-    <button type="submit" class="btn btn-primary">Opslaan</button>
-    <a asp-controller="HomeKandidaat" asp-action="Index" class="btn btn-secondary">Annuleren</a>
-}
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Opslaan</button>
+            <a asp-controller="HomeKandidaat" asp-action="Index" class="btn btn-secondary">Annuleren</a>
+        </div>
+    }
 
-<h3>Ingevoerde Antwoorden</h3>
-<div class="table-responsive">
-    <table class="table">
-        <thead>
+    <hr class="my-4" />
+
+    <h4 class="mb-3">Ingevoerde antwoorden</h4>
+
+    <table class="table table-sm table-hover">
+        <thead class="table-light">
             <tr>
                 <th>Vraag</th>
                 <th>Antwoord</th>
@@ -87,4 +119,5 @@
             }
         </tbody>
     </table>
+
 </div>

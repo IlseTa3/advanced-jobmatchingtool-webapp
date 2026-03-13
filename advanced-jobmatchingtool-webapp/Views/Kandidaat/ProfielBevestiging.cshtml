@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Profielbevestiging";
+}
+
+<div class="container mt-4">
+    <div class="card border-success">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">✅ Profiel succesvol opgeslagen</h4>
+        </div>
+        <div class="card-body">
+            <p class="lead">Bedankt voor het invullen van je profiel.</p>
+
+            <p>Je gegevens zijn veilig opgeslagen en worden nu bekeken door ons team.</p>
+
+            <ul>
+                <li>Als je profiel volledig is, krijg je toegang tot de volgende vragenlijst.</li>
+                <li>Als er nog iets ontbreekt, krijg je een melding of nemen we contact met je op.</li>
+                <li>Je kan je profiel op elk moment aanpassen via <a asp-action="Profiel">Mijn profiel</a>.</li>
+            </ul>
+
+            <hr />
+
+            <p class="text-muted">Heb je hulp nodig bij het invullen? Geef dit aan in je profiel of neem contact met ons op.</p>
+
+            <a asp-action="Profiel" class="btn btn-outline-primary">Terug naar mijn profiel</a>
+        </div>
+    </div>
+</div>

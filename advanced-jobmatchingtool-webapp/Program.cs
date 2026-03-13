@@ -98,7 +98,7 @@ if (result2.Succeeded)
 }
 
 //Kandidaat 1
-/*var kandidaatUser = new ApplicationUser
+var kandidaatUser = new ApplicationUser
 {
     Voornaam = "Thomas",
     Familienaam = "Everaert",
@@ -112,7 +112,7 @@ var result = await userManager.CreateAsync(kandidaatUser, "OpusAptusWelcome!123"
 if(result.Succeeded)
 {
     await userManager.AddToRoleAsync(kandidaatUser, "Kandidaat");
-}*/
+}
 
 //klant 2
 /*var kandidaat2User = new ApplicationUser

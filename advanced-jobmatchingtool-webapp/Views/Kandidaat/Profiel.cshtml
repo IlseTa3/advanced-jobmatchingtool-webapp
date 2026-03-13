@@ -6,13 +6,15 @@
 
 <div class="container mt-4">
 
-    <h2 class="text-primary mb-3 text-center">Mijn profiel</h2>
+    <h2 class="mb-3 text-center">Mijn profiel</h2>
     <hr />
+
+    
 
     <form asp-action="Profiel" method="post" enctype="multipart/form-data">
 
         <!-- Persoonlijke gegevens -->
-        <h4 class="text-primary mb-3">Persoonlijke gegevens</h4>
+        <h4 class="mb-3">Persoonlijke gegevens</h4>
 
         <div class="row mb-3">
             <label asp-for="Voornaam" class="col-sm-3 col-form-label fw-semibold"></label>
@@ -71,7 +73,7 @@
         </div>
 
         <!-- Statuut en ondersteuning -->
-        <h4 class="text-primary mt-4 mb-3">Statuut en ondersteuning</h4>
+        <h4 class="mt-4 mb-3">Statuut en ondersteuning</h4>
 
         <div class="row mb-3">
             <label asp-for="Statuut.Diagnose" class="col-sm-3 col-form-label fw-semibold"></label>

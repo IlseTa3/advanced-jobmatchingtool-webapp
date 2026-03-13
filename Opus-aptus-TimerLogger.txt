@@ -53,3 +53,13 @@ Testen zijn geslaagd, tekstje toevoegen dat mensen hun spamfolder moeten control
 Dit kan nu overgezet worden naar de werkelijke applicatie.
 
 Tijdsduur: 1h20'
+
+Donderdag 12/03/2026
+
+E-mailservice van testapplicatie naar de opus aptus applicatie overgezet en getest. Werkt prima, maar moet nog getest worden in productie.
+
+De kleuren, fonts en andere styling aangepast. De styling moest overschreven worden, er moest gezocht worden naar de juiste klasse om deze te kunnen overschrijven. Dit moest ook in een aparte styling file gedaan worden. Al bij al is dit goed gelukt.
+
+Volgende stap is om dit op Render.com te zetten en Supabase te gebruiken voor de database.
+
+Tijdsduur: 5h41'10" (voor beide delen samen)

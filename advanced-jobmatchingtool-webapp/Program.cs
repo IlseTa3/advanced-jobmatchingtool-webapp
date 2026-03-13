@@ -112,7 +112,6 @@ using (var scope = app.Services.CreateScope())
         string.IsNullOrWhiteSpace(adminFamilienaam))
     {
         Console.WriteLine("Admin seeding skipped: missing environment variables.");
-        return;
     }
 
     // Admin user aanmaken indien hij nog niet bestaat

@@ -1,6 +1,7 @@
 ﻿using MailKit.Net.Smtp;
-using MimeKit;
+using MailKit.Security;
 using Microsoft.Extensions.Logging;
+using MimeKit;
 
 public class EmailService
 {
@@ -20,7 +21,10 @@ public class EmailService
             _logger.LogInformation("Start verzending van e-mail naar {ToEmail} met onderwerp '{Subject}'", toEmail, subject);
 
             var email = new MimeMessage();
-            email.From.Add(new MailboxAddress(_config["SMTP_SENDERNAME"], _config["SMTP_SENDEREMAIL"]));
+            email.From.Add(new MailboxAddress(
+                _config["EmailSettings:From"],
+                _config["EmailSettings:From"]
+            ));
             email.To.Add(new MailboxAddress(toName, toEmail));
             email.Subject = subject;
             email.Body = new TextPart("html") { Text = message };
@@ -28,16 +32,21 @@ public class EmailService
             using var smtp = new SmtpClient();
             smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-            _logger.LogInformation("Verbinding maken met SMTP server {Host}:{Port}", _config["SMTP_HOST"], _config["SMTP_PORT"]);
-            await smtp.ConnectAsync(_config["SMTP_HOST"], int.Parse(_config["SMTP_PORT"]), MailKit.Security.SecureSocketOptions.SslOnConnect);
+            var host = _config["EmailSettings:SmtpServer"];
+            var port = int.Parse(_config["EmailSettings:Port"]);
+            var username = _config["EmailSettings:Username"];
+            var password = _config["EmailSettings:Password"];
+            var useSSL = bool.Parse(_config["EmailSettings:UseSSL"]);
 
-            _logger.LogInformation("Authenticatie met SMTP gebruiker {User}", _config["SMTP_USERNAME"]);
-            await smtp.AuthenticateAsync(_config["SMTP_USERNAME"], _config["SMTP_PASSWORD"]);
+            _logger.LogInformation("Verbinding maken met SMTP server {Host}:{Port}", host, port);
+            await smtp.ConnectAsync(host, port,
+                useSSL ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.StartTls);
+
+            _logger.LogInformation("Authenticatie met SMTP gebruiker {User}", username);
+            await smtp.AuthenticateAsync(username, password);
 
             await smtp.SendAsync(email);
             await smtp.DisconnectAsync(true);
-
-            _logger.LogDebug("Sender: {Name} <{Email}>", _config["SMTP_SENDERNAME"], _config["SMTP_SENDEREMAIL"]);
 
             _logger.LogInformation("E-mail succesvol verzonden naar {ToEmail}", toEmail);
             return true;

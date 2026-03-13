@@ -15,7 +15,7 @@ namespace advanced_jobmatchingtool_webapp.Models
         public string? ExtraInfo { get; set; } //extra info voor beheerder in te vullen
         [ValidateNever]
         public string? Categorie { get; set; }
-        public DateTime DatumIngevuld { get; set; } = DateTime.Now;
+        public DateTime DatumIngevuld { get; set; } = DateTime.UtcNow;
 
 
         [ValidateNever]

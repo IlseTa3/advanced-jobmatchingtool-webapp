@@ -1,0 +1,65 @@
+Opus aptus Timer/Logger
+
+Dinsdag 3/03/2026
+
+Database veranderen van MySQL naar PostgreSQL
+Nieuwe migraties uitvoeren
+Versie van .NET aanpassen, zodat alles compatibel is
+Lokaal testen
+
+Alles ok, behalve SMTP => DNS configuratie Opus Apus moet aangepast worden
+
+UI aangepast Behoeftes en Werk Kandidaat (Basic)
+
+Rest moet nog aangepast worden.
+
+Tijdsduur: 3h33'43"
+
+Woensdag 4/03/2026
+
+Voor de klant volgende zaken aangepast:
+
+- klant kan contactformulier invullen. Dat doet hij via de website, maar krijgt ook een link te zien op de Homepagina.
+- klant hoeft geen vragen in te vullen. Deze controllers en acties zijn daarom ook weggehaald.
+- beheerder vult de vragen in om te stellen aan (potentiële) klanten en houdt zelf een antwoordenlijst bij.
+	Deze antwoordenlijst wordt in een later stadium opnieuw gemaakt.
+- beheerder vult ook vragen in om te stellen aan kandidaten en kan een lijst van ingevulde antwoorden zien van alle kandidaten. Deze lijst kan gefilterd worden.
+
+Kandidaten kunnen zich registreren en worden dan "Voorlopige Kandidaat". Wanneer zij hun gegevens correct invullen, zoals hun statuut en hun personalia, dan komen ze op de pagina terecht waar ze de andere vragen kunnen invullen.
+
+Kandidaten kunnen wel nog aan hun pagina met hun personalia gegevens om deze (eventueel) te wijzigen.
+
+De UI van de pagina's met vragen werden aangepast voor Stress, Studies en Triggers. Zelfde stijl werd gehanteerd als bij Behoeftes en Werk.
+
+De overzichtspagina werd aangepast in dezelfde stijl.
+
+De profielpagina van de kandidaat (en ook voorlopige kandidaat) werd ook aangepast in dezelfde stijl.
+
+Er werd een technisch probleem opgelost: wanneer een kandidaat een reeds bestaande bestand wil vervangen, dan crashte de applicatie. Dit werd aangepast in de servicelaag en nu is dit opgelost.
+
+Blijft nog technisch probleem: kandidaat kan geen meerdere bestanden uploaden.
+
+Tijdsduur: 3h07'36"
+
+Woensdag 11/03/2026
+
+Testen om andere e-mailservice op te zetten. Mailbox aangemaakt in Combell.
+Appsettings.json en Launchsettings.json aangepast, als ook de e-mailserviceklasse. Dit werd gedaan in een aparte applicatie met enkel focus op de mailservice.
+Alle settings werden goedgezet.
+
+Testen werden uitgevoerd. In de Hotmail komt het in ongewenste e-mail terecht, maar mijn mailbox heeft enkel een basis versie, ik kan gaan DMARC of DKIM instellen.
+Testen zijn geslaagd, tekstje toevoegen dat mensen hun spamfolder moeten controleren.
+
+Dit kan nu overgezet worden naar de werkelijke applicatie.
+
+Tijdsduur: 1h20'
+
+Donderdag 12/03/2026
+
+E-mailservice van testapplicatie naar de opus aptus applicatie overgezet en getest. Werkt prima, maar moet nog getest worden in productie.
+
+De kleuren, fonts en andere styling aangepast. De styling moest overschreven worden, er moest gezocht worden naar de juiste klasse om deze te kunnen overschrijven. Dit moest ook in een aparte styling file gedaan worden. Al bij al is dit goed gelukt.
+
+Volgende stap is om dit op Render.com te zetten en Supabase te gebruiken voor de database.
+
+Tijdsduur: 5h41'10" (voor beide delen samen)

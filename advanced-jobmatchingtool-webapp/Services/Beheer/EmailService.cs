@@ -1,54 +1,51 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using SendGrid;
-using SendGrid.Helpers.Mail;
-using System.Net.Mail;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.Extensions.Logging;
 
-namespace advanced_jobmatchingtool_webapp.Services.Beheer
+public class EmailService
 {
-    public class EmailService : IEmailService, IEmailSender
+    private readonly IConfiguration _config;
+    private readonly ILogger<EmailService> _logger;
+
+    public EmailService(IConfiguration config, ILogger<EmailService> logger)
     {
-        private readonly string _apiKey;
-        private readonly string _senderEmail;
-        private readonly string _senderName;
-        private readonly ILogger<EmailService> _logger;
+        _config = config;
+        _logger = logger;
+    }
 
-        public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
+    public async Task<bool> SendEmailAsync(string toName, string toEmail, string subject, string message)
+    {
+        try
         {
-            _apiKey = configuration["SendGrid:ApiKey"];
-            _senderEmail = configuration["SendGrid:SenderEmail"];
-            _senderName = configuration["SendGrid:SenderName"];
-            _logger = logger;
-            _logger.LogInformation("EmailService geconfigureerd. Sender:{SenderEmail}, API Key Length:{ApiKeyLength}, API KEY: {ApiKey}",
-                _senderEmail, _apiKey?.Length ?? 0, _apiKey);
+            _logger.LogInformation("Start verzending van e-mail naar {ToEmail} met onderwerp '{Subject}'", toEmail, subject);
+
+            var email = new MimeMessage();
+            email.From.Add(new MailboxAddress(_config["SMTP_SENDERNAME"], _config["SMTP_SENDEREMAIL"]));
+            email.To.Add(new MailboxAddress(toName, toEmail));
+            email.Subject = subject;
+            email.Body = new TextPart("html") { Text = message };
+
+            using var smtp = new SmtpClient();
+            smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+            _logger.LogInformation("Verbinding maken met SMTP server {Host}:{Port}", _config["SMTP_HOST"], _config["SMTP_PORT"]);
+            await smtp.ConnectAsync(_config["SMTP_HOST"], int.Parse(_config["SMTP_PORT"]), MailKit.Security.SecureSocketOptions.SslOnConnect);
+
+            _logger.LogInformation("Authenticatie met SMTP gebruiker {User}", _config["SMTP_USERNAME"]);
+            await smtp.AuthenticateAsync(_config["SMTP_USERNAME"], _config["SMTP_PASSWORD"]);
+
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
+
+            _logger.LogDebug("Sender: {Name} <{Email}>", _config["SMTP_SENDERNAME"], _config["SMTP_SENDEREMAIL"]);
+
+            _logger.LogInformation("E-mail succesvol verzonden naar {ToEmail}", toEmail);
+            return true;
         }
-
-        public async Task SendEmailAsync(string recipientEmail, string subject, string message)
+        catch (Exception ex)
         {
-            try
-            {
-                var client = new SendGridClient(_apiKey);
-                var from = new EmailAddress(_senderEmail, _senderName);
-                var to = new EmailAddress(recipientEmail);
-                var msg = MailHelper.CreateSingleEmail(from, to, subject, message, message);
-
-                var response = await client.SendEmailAsync(msg);
-
-                if ((int)response.StatusCode >= 200 && (int)response.StatusCode < 300)
-                {
-                    _logger.LogInformation("E-mail succesvol verzonden naar {RecipientEmail}", recipientEmail);
-                }
-                else
-                {
-                    var errorMessage = $"Fout bij het verzenden van e-mail: {response.StatusCode}";
-                    _logger.LogError(errorMessage);
-                    throw new Exception(errorMessage);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Er trad een fout op tijdens het verzenden van een e-mail.");
-                throw;
-            }
+            _logger.LogError(ex, "Fout bij verzenden van e-mail naar {ToEmail}", toEmail);
+            return false;
         }
     }
 }

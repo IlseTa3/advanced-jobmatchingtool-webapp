@@ -1,0 +1,126 @@
+﻿@model advanced_jobmatchingtool_webapp.ViewModels.Kandidaat.KandidaatProfielViewModel
+
+@{
+    ViewData["Title"] = "Mijn profiel";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-3 text-center">Mijn profiel</h2>
+    <hr />
+
+    
+
+    <form asp-action="Profiel" method="post" enctype="multipart/form-data">
+
+        <!-- Persoonlijke gegevens -->
+        <h4 class="mb-3">Persoonlijke gegevens</h4>
+
+        <div class="row mb-3">
+            <label asp-for="Voornaam" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9">
+                <input asp-for="Voornaam" class="form-control-plaintext" readonly />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Familienaam" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9">
+                <input asp-for="Familienaam" class="form-control-plaintext" readonly />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Email" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9">
+                <input asp-for="Email" class="form-control-plaintext" readonly />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Personalia.Gsmnr" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9">
+                <input asp-for="Personalia.Gsmnr" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Personalia.Telnr" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9">
+                <input asp-for="Personalia.Telnr" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Personalia.Postcode" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9">
+                <input asp-for="Personalia.Postcode" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Personalia.Stad" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9">
+                <input asp-for="Personalia.Stad" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Personalia.Land" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9">
+                <input asp-for="Personalia.Land" class="form-control" />
+            </div>
+        </div>
+
+        <!-- Statuut en ondersteuning -->
+        <h4 class="mt-4 mb-3">Statuut en ondersteuning</h4>
+
+        <div class="row mb-3">
+            <label asp-for="Statuut.Diagnose" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9">
+                <select asp-for="Statuut.Diagnose" class="form-select"
+                        asp-items="Html.GetEnumSelectList<DiagnoseOpties>()"></select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Statuut.HeeftIMWStatuut" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9 d-flex align-items-center">
+                <input asp-for="Statuut.HeeftIMWStatuut" type="checkbox" class="form-check-input me-2" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Statuut.IMWBestanden" class="col-sm-3 col-form-label fw-semibold">Upload bewijs</label>
+            <div class="col-sm-9">
+                <input asp-for="Statuut.IMWBestanden" type="file" multiple class="form-control" />
+                <small class="text-muted">PDF, DOC, JPG, PNG</small>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Statuut.HulpNodigBijInvullen" class="col-sm-3 col-form-label fw-semibold"></label>
+            <div class="col-sm-9 d-flex align-items-center">
+                <input asp-for="Statuut.HulpNodigBijInvullen" type="checkbox" class="form-check-input me-2" />
+            </div>
+        </div>
+
+        @if (Model.Statuut.BestaandeBestanden?.Any() == true)
+        {
+            <h5 class="mt-4">Reeds geüploade bestanden</h5>
+            <ul class="list-group mb-3">
+                @foreach (var bestand in Model.Statuut.BestaandeBestanden)
+                {
+                    <li class="list-group-item">
+                        <a href="~/uploads/@bestand.UniekeNaam" target="_blank">
+                            @bestand.OrigineleNaam
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+
+        <button type="submit" class="btn btn-primary">Opslaan</button>
+
+    </form>
+</div>

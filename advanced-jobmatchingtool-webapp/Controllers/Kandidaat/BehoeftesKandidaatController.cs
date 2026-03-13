@@ -45,12 +45,17 @@ namespace advanced_jobmatchingtool_webapp.Controllers.Kandidaat
                     VraagId = v.Id,
                     VraagText = v.VraagText,
                     Type = v.SoortAntwoord.ToString(),
-                    Opties = v.AntwoordOptie.OptieTekst?.Split(", ").ToList(),
+                    Opties = v.AntwoordOptie.OptieTekst?.Split(new[] {',', ';'}, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(o => o.Trim()).ToList(),
                     Antwoord = antwoorden.FirstOrDefault(a => a.VraagKandidaatId == v.Id)?.AntwoordTekst,
-                    Antwoorden = antwoorden.FirstOrDefault(a => a.VraagKandidaatId == v.Id)?.AntwoordTekst?.Split(", ").ToList()
+                    Antwoorden = antwoorden.FirstOrDefault(a => a.VraagKandidaatId == v.Id)?.AntwoordTekst?
+                    .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(o => o.Trim()).ToList()
                 }).ToList(),
-
+                
             };
+
+          
 
             return View(model);
         }
@@ -114,7 +119,7 @@ namespace advanced_jobmatchingtool_webapp.Controllers.Kandidaat
                         VraagKandidaatId = item.VraagId,
                         AntwoordTekst = item.Antwoord,
                         Categorie = vraag.Categorie.NaamCategorie + " - " + vraag.Categorie.NaamSubCategorie,
-                        DatumIngevuld = DateTime.Now,
+                        DatumIngevuld = DateTime.UtcNow,
                     };
 
                     _context.AntwoordenKandidaten.Add(nieuwAntwoord);

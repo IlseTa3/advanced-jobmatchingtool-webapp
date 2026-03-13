@@ -16,6 +16,9 @@ namespace advanced_jobmatchingtool_webapp.Models
         public DbSet<AntwoordOptie> AntwoordOpties { get; set; }
         public DbSet<AntwoordKandidaat> AntwoordenKandidaten { get; set; }
         public DbSet<AntwoordKlant> AntwoordenKlanten { get; set; }
+        public DbSet<Prospect> Prospecten { get; set; }
+        public DbSet<StatuutKandidaat> Statuten {  get; set; }
+        public DbSet<PersonaliaKandidaat> Personalia {  get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -74,6 +77,20 @@ namespace advanced_jobmatchingtool_webapp.Models
                 .WithMany()
                 .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.Statuut)
+                .WithOne(s => s.ApplicationUser)
+                .HasForeignKey<StatuutKandidaat>(s => s.ApplicationUserId);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.Personalia)
+                .WithOne(p => p.ApplicationUser)
+                .HasForeignKey<PersonaliaKandidaat>(p => p.ApplicationUserId);
+
+            modelBuilder.Entity<StatuutKandidaat>()
+                .Property(s => s.Diagnose)
+                .HasConversion<string>();
 
         }
 

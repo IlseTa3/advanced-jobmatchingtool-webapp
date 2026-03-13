@@ -16,8 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    new MySqlServerVersion(new Version(8, 0, 36))));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
@@ -50,7 +49,12 @@ builder.Services.AddScoped<IBeheerAntwoordKandidaatRepository, BeheerAntwoordKan
 builder.Services.AddScoped<IBeheerAntwoordKandidaatService, BeheerAntwoordKandidaatService>();
 builder.Services.AddScoped<IBeheerAntwoordKlantRepository, BeheerAntwoordKlantRepository>();
 builder.Services.AddScoped<IBeheerAntwoordKlantService, BeheerAntwoordKlantService>();
-builder.Services.AddTransient<IEmailSender,EmailService>();
+builder.Services.AddScoped<IProspectRepository, ProspectRepository>();
+builder.Services.AddScoped<IProspectService, ProspectService>();
+builder.Services.AddScoped<IPersonaliaKandidaatRepository, PersonaliaKandidaatRepository>();
+builder.Services.AddScoped<IStatuutKandidaatRepository,  StatuutKandidaatRepository>();
+builder.Services.AddScoped<IKandidaatService, KandidaatService>();
+builder.Services.AddSingleton<EmailService>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -70,50 +74,68 @@ var serviceProvider = app.Services.CreateScope().ServiceProvider;
 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
 await roleManager.CreateAsync(new IdentityRole("Kandidaat"));
+await roleManager.CreateAsync(new IdentityRole("Voorlopige kandidaat"));
 await roleManager.CreateAsync(new IdentityRole("Beheerder"));
 await roleManager.CreateAsync(new IdentityRole("Klant"));
 
 var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-//Klant 1
-/*var klant1User = new ApplicationUser
+var beheerUser = new ApplicationUser
+{
+    Voornaam = "Marijke",
+    Familienaam = "Van Aken",
+    UserName = "marijke@opusaptus.be",
+    Email = "marijke@opusaptus.be",
+    EmailConfirmed = true,
+    Role = "Beheerder",
+    TermsCond = true
+};
+
+var result2 = await userManager.CreateAsync(beheerUser, "OpusAptus123!");
+if (result2.Succeeded)
+{
+    await userManager.AddToRoleAsync(beheerUser, "Beheerder");
+}
+
+//Kandidaat 1
+var kandidaatUser = new ApplicationUser
 {
     Voornaam = "Thomas",
     Familienaam = "Everaert",
     UserName = "thomas.everaert@kinsley.com",
     Email = "thomas.everaert@kinsley.com",
     EmailConfirmed = true,
-    Role = "Klant",
-    PhoneNumber = "0164507812"
+    Role = "Kandidaat",
 };
 
-var result = await userManager.CreateAsync(klant1User, "Welcome123!");
+var result = await userManager.CreateAsync(kandidaatUser, "OpusAptusWelcome!123");
 if(result.Succeeded)
 {
-    await userManager.AddToRoleAsync(klant1User, "Klant");
+    await userManager.AddToRoleAsync(kandidaatUser, "Kandidaat");
 }
 
 //klant 2
-var klant2User = new ApplicationUser
+/*var kandidaat2User = new ApplicationUser
 {
     Voornaam = "Maaike",
     Familienaam = "Goossens",
-    UserName = "maaike.goossens@delaware.be",
-    Email = "maaike.goossens@delaware.be",
+    UserName = "maaike.goossens@gmail.com",
+    Email = "maaike.goossens@gmail.com",
     EmailConfirmed = true,
-    Role = "Klant",
+    Role = "Kandidaat",
     PhoneNumber = "0102058874"
 };
 
-var result2 = await userManager.CreateAsync(klant2User, "Welcome123!");
+var result2 = await userManager.CreateAsync(kandidaat2User, "OpusAptusWelcome!123!");
 if (result.Succeeded)
 {
-    await userManager.AddToRoleAsync(klant2User, "Klant");
-}
-*/
+    await userManager.AddToRoleAsync(kandidaat2User, "Kandidaat");
+}*/
+
 
 //var kandidaatUser = await userManager.FindByEmailAsync("ilse_tastenhoye@msn.com");
 //await userManager.AddToRoleAsync(kandidaatUser, "Beheerder");
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

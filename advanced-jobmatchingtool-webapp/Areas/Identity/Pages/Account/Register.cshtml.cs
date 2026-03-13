@@ -1,20 +1,17 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using advanced_jobmatchingtool_webapp.Models;
+using advanced_jobmatchingtool_webapp.Services; // Zorg dat EmailService namespace klopt
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
@@ -29,7 +26,7 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly EmailService _emailService;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
         public RegisterModel(
@@ -37,68 +34,41 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender, IWebHostEnvironment hostingEnvironment)
+            EmailService emailService,
+            IWebHostEnvironment hostingEnvironment)
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _emailService = emailService;
             _hostingEnvironment = hostingEnvironment;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ReturnUrl { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Het wachtwoord moet minstens {2} en maximaal {1} tekens bevatten.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Bevestig wachtwoord")]
+            [Compare("Password", ErrorMessage = "De wachtwoorden komen niet overeen.")]
             public string ConfirmPassword { get; set; }
 
             [Required]
@@ -109,18 +79,10 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
             [Display(Name = "Familienaam")]
             public string Lastname { get; set; }
 
-            
-
-            [Required]
-            [Display(Name = "Kandidaat of Klant")]
-            public string Role { get; set; }
-
-            [Display(Name = "Heb je een Individueel Maatwerk statuut?")]
-            public bool HeeftIMWStatuut { get; set; }
-            [Display(Name = "Uploaden bewijs van Individueel Maatwerk (PDF)")]
-            public IFormFile IMWStatuutBestand { get; set; }
+            [Required(ErrorMessage = "Je moet akkoord gaan met de voorwaarden.")]
+            [Display(Name = "Ik ga akkoord met de algemene voorwaarden en privacyverklaring")]
+            public bool TermsCond { get; set; }
         }
-
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -132,6 +94,7 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
@@ -140,30 +103,15 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 user.Voornaam = Input.Firstname;
                 user.Familienaam = Input.Lastname;
-              
-                user.Role = Input.Role;
-                if (Input.Role == "Kandidaat")
-                {
-                    if (!Input.HeeftIMWStatuut || Input.IMWStatuutBestand == null)
-                    {
-                        ModelState.AddModelError(string.Empty, "Kandidaten moeten een Individueel Maatwerk statuut hebben en een bewijs uploaden.");
-                        return Page();
-                    }
+                user.TermsCond = Input.TermsCond;
+                user.ProfileComplete = false;
+                user.Role = "Voorlopige kandidaat";
 
-                    //verwerken geuploade bestand
-                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
-                    var uniqueFilename = Guid.NewGuid().ToString() + "_" + Input.IMWStatuutBestand.FileName;
-                    var filePath = Path.Combine(uploadsFolder, uniqueFilename);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await Input.IMWStatuutBestand.CopyToAsync(stream);
-                    }
-                }
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("Nieuwe gebruiker geregistreerd.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -174,14 +122,20 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Bevestig je e-mailadres",
-                        $"Bedankt voor je registratie. Het enige wat je nu nog moet doen is je e-mailadres bevestigen.<br/><br/>" +
-                        "Dit kan door op bijgevoegde link te klikken.<br/><br/>" +
-                        $"Met vriendelijke groet, het Krasswerk-Team <br/><br/>" +
-                        $"Klik op onderstaande link om je e-mailadres te bevestigen: <br/> <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Bevestig je e-mailadres</a>.");
+                    var naam = $"{Input.Firstname} {Input.Lastname}";
+                    var onderwerp = "Bevestig je e-mailadres";
+                    var bericht = $@"
+                            Beste {naam},<br/><br/>
+                            Bedankt voor je registratie bij Opus Aptus. Het enige wat je nu nog moet doen is je e-mailadres bevestigen.<br/><br/>
+                            Klik op onderstaande link om je e-mailadres te bevestigen:<br/>
+                            <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Bevestig je e-mailadres</a><br/><br/>
+                            Met vriendelijke groet,<br/>
+                            Het Opus Aptus team.
+";
 
-                    //rol toevoegen
-                    await _userManager.AddToRoleAsync(user, Input.Role);
+                    await _emailService.SendEmailAsync(naam, Input.Email, onderwerp, bericht);
+
+                    await _userManager.AddToRoleAsync(user, "Voorlopige kandidaat");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -193,13 +147,13 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 
@@ -211,9 +165,7 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+                throw new InvalidOperationException($"Kan geen instantie maken van '{nameof(ApplicationUser)}'. Zorg dat deze klasse een parameterloze constructor heeft.");
             }
         }
 
@@ -221,7 +173,7 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
         {
             if (!_userManager.SupportsUserEmail)
             {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
+                throw new NotSupportedException("Deze UI vereist een user store met e-mailondersteuning.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }

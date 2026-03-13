@@ -114,7 +114,7 @@ namespace advanced_jobmatchingtool_webapp.Controllers.Kandidaat
                         VraagKandidaatId = item.VraagId,
                         AntwoordTekst = item.Antwoord,
                         Categorie = vraag.Categorie.NaamCategorie + " - " + vraag.Categorie.NaamSubCategorie,
-                        DatumIngevuld = DateTime.Now,
+                        DatumIngevuld = DateTime.UtcNow,
                     };
 
                     _context.AntwoordenKandidaten.Add(nieuwAntwoord);

@@ -1,4 +1,4 @@
-using advanced_jobmatchingtool_webapp.Models;
+﻿using advanced_jobmatchingtool_webapp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -79,12 +79,11 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    //Migraties
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    // Migraties
+    var db = services.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
 
-    //Rollen en admin user aanmaken
-    
+    // Rollen en admin user aanmaken
     var config = services.GetRequiredService<IConfiguration>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
@@ -105,6 +104,16 @@ using (var scope = app.Services.CreateScope())
     var adminPassword = config["Admin:Password"];
     var adminVoornaam = config["Admin:Voornaam"];
     var adminFamilienaam = config["Admin:Familienaam"];
+
+    // Controle: als één van de variabelen ontbreekt → seeding overslaan
+    if (string.IsNullOrWhiteSpace(adminEmail) ||
+        string.IsNullOrWhiteSpace(adminPassword) ||
+        string.IsNullOrWhiteSpace(adminVoornaam) ||
+        string.IsNullOrWhiteSpace(adminFamilienaam))
+    {
+        Console.WriteLine("Admin seeding skipped: missing environment variables.");
+        return;
+    }
 
     // Admin user aanmaken indien hij nog niet bestaat
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
@@ -129,10 +138,15 @@ using (var scope = app.Services.CreateScope())
         }
         else
         {
-            // Optioneel: log errors
+            Console.WriteLine("Admin creation failed:");
+            foreach (var error in result.Errors)
+            {
+                Console.WriteLine($" - {error.Description}");
+            }
         }
     }
 }
+
 
 
 app.UseHttpsRedirection();

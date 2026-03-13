@@ -62,6 +62,7 @@ builder.Logging.AddDebug();
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -70,71 +71,57 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-var serviceProvider = app.Services.CreateScope().ServiceProvider;
-var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-await roleManager.CreateAsync(new IdentityRole("Kandidaat"));
-await roleManager.CreateAsync(new IdentityRole("Voorlopige kandidaat"));
-await roleManager.CreateAsync(new IdentityRole("Beheerder"));
-await roleManager.CreateAsync(new IdentityRole("Klant"));
-
-var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-var beheerUser = new ApplicationUser
+using (var scope = app.Services.CreateScope())
 {
-    Voornaam = "Marijke",
-    Familienaam = "Van Aken",
-    UserName = "marijke@opusaptus.be",
-    Email = "marijke@opusaptus.be",
-    EmailConfirmed = true,
-    Role = "Beheerder",
-    TermsCond = true
-};
+    var services = scope.ServiceProvider;
+    var config = services.GetRequiredService<IConfiguration>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-var result2 = await userManager.CreateAsync(beheerUser, "OpusAptus123!");
-if (result2.Succeeded)
-{
-    await userManager.AddToRoleAsync(beheerUser, "Beheerder");
+    // Rollen aanmaken indien ze nog niet bestaan
+    string[] roles = { "Kandidaat", "Voorlopige kandidaat", "Beheerder", "Klant" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    // Admin gegevens uit environment variables
+    var adminEmail = config["Admin:Email"];
+    var adminPassword = config["Admin:Password"];
+    var adminVoornaam = config["Admin:Voornaam"];
+    var adminFamilienaam = config["Admin:Familienaam"];
+
+    // Admin user aanmaken indien hij nog niet bestaat
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+    if (adminUser == null)
+    {
+        adminUser = new ApplicationUser
+        {
+            Voornaam = adminVoornaam,
+            Familienaam = adminFamilienaam,
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true,
+            TermsCond = true
+        };
+
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
+
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Beheerder");
+        }
+        else
+        {
+            // Optioneel: log errors
+        }
+    }
 }
-
-//Kandidaat 1
-var kandidaatUser = new ApplicationUser
-{
-    Voornaam = "Thomas",
-    Familienaam = "Everaert",
-    UserName = "thomas.everaert@kinsley.com",
-    Email = "thomas.everaert@kinsley.com",
-    EmailConfirmed = true,
-    Role = "Kandidaat",
-};
-
-var result = await userManager.CreateAsync(kandidaatUser, "OpusAptusWelcome!123");
-if(result.Succeeded)
-{
-    await userManager.AddToRoleAsync(kandidaatUser, "Kandidaat");
-}
-
-//klant 2
-/*var kandidaat2User = new ApplicationUser
-{
-    Voornaam = "Maaike",
-    Familienaam = "Goossens",
-    UserName = "maaike.goossens@gmail.com",
-    Email = "maaike.goossens@gmail.com",
-    EmailConfirmed = true,
-    Role = "Kandidaat",
-    PhoneNumber = "0102058874"
-};
-
-var result2 = await userManager.CreateAsync(kandidaat2User, "OpusAptusWelcome!123!");
-if (result.Succeeded)
-{
-    await userManager.AddToRoleAsync(kandidaat2User, "Kandidaat");
-}*/
-
-
-//var kandidaatUser = await userManager.FindByEmailAsync("ilse_tastenhoye@msn.com");
-//await userManager.AddToRoleAsync(kandidaatUser, "Beheerder");
 
 
 app.UseHttpsRedirection();

@@ -13,6 +13,8 @@ RUN dotnet publish -c Release -o /app
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 # Force IPv4 over IPv6
 RUN echo "precedence ::ffff:0:0/96  100" >> /etc/gai.conf
+#dummy change
+#rebuild trigger
 WORKDIR /app
 COPY --from=build /app .
 

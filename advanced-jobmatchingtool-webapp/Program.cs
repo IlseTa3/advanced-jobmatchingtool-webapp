@@ -13,8 +13,9 @@ using advanced_jobmatchingtool_webapp.Services.Klant;
 
 var builder = WebApplication.CreateBuilder(args);
 
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 AppContext.SetSwitch("System.Net.Sockets.Socket.OSSupportsIPv6", false);
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

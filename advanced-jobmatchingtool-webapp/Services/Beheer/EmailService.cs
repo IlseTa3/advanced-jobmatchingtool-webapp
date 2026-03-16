@@ -30,13 +30,13 @@ public class EmailService
             email.Body = new TextPart("html") { Text = message };
 
             using var smtp = new SmtpClient();
-            smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
+            
 
             var host = _config["EmailSettings:SmtpServer"];
-            var port = int.Parse(_config["EmailSettings:Port"]);
+            var port = _config.GetValue<int>("EmailSettings:Port");
             var username = _config["EmailSettings:Username"];
             var password = _config["EmailSettings:Password"];
-            var useSSL = bool.Parse(_config["EmailSettings:UseSSL"]);
+            var useSSL = _config.GetValue<bool>("EmailSettings:UseSSL");
 
             _logger.LogInformation("Verbinding maken met SMTP server {Host}:{Port}", host, port);
             await smtp.ConnectAsync(host, port,

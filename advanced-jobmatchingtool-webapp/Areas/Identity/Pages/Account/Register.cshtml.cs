@@ -107,6 +107,7 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
                 user.ProfileComplete = false;
                 user.Role = "Voorlopige kandidaat";
 
+                _logger.LogWarning("Registratie poging voor e-mail: {Email}", Input.Email);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

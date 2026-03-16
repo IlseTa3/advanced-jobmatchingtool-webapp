@@ -22,7 +22,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -59,7 +59,7 @@ builder.Services.AddScoped<IPersonaliaKandidaatRepository, PersonaliaKandidaatRe
 builder.Services.AddScoped<IStatuutKandidaatRepository,  StatuutKandidaatRepository>();
 builder.Services.AddScoped<IKandidaatService, KandidaatService>();
 builder.Services.AddScoped<EmailService>();
-builder.Services.AddScoped<ILogger>();
+
 
 //builder.Logging.ClearProviders();
 //builder.Logging.AddConsole();

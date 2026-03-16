@@ -58,11 +58,11 @@ builder.Services.AddScoped<IProspectService, ProspectService>();
 builder.Services.AddScoped<IPersonaliaKandidaatRepository, PersonaliaKandidaatRepository>();
 builder.Services.AddScoped<IStatuutKandidaatRepository,  StatuutKandidaatRepository>();
 builder.Services.AddScoped<IKandidaatService, KandidaatService>();
-builder.Services.AddSingleton<EmailService>();
+builder.Services.AddScoped<EmailService>();
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
+//builder.Logging.ClearProviders();
+//builder.Logging.AddConsole();
+//builder.Logging.AddDebug();
 
 var app = builder.Build();
 

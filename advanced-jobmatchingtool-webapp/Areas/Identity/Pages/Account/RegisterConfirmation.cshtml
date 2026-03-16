@@ -1,23 +1,29 @@
 ﻿@page
 @model RegisterConfirmationModel
 @{
-    ViewData["Title"] = "Register Bevestiging";
+    ViewData["Title"] = "Registratie Bevestiging";
 }
 
 <h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-<p>
-    Bedankt voor je registratie, je krijgt zodadelijk een e-mail van ons. Houd zeker je spambox
-    in de gaten. Met vriendelijke groet, het Opus Aptus-Team.
-</p>
-    }
-    else
-    {
-<p>
-        Er is iets misgegaan. Staat er een foutje in je e-mailadres?
-</p>
-    }
+@*
+@if (Model.DisplayConfirmAccountLink)
+{
+    <p>
+        Bedankt voor je registratie! Je account is aangemaakt
+        en je kan <a href="@Url.Page("/Account/Login")">direct inloggen</a>.
+    </p>
+    
+}
+else
+{
+    <p>
+        Er is iets misgegaan tijdens je registratie. Controleer je ingevulde gegevens en probeer opnieuw.
+    </p>
 }
 
+*@
+
+<p>
+    Bedankt voor je registratie! Je account is aangemaakt
+    en je kan <a href="@Url.Page("/Account/Login")">direct inloggen</a>.
+</p>

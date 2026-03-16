@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using advanced_jobmatchingtool_webapp.Models;
-using advanced_jobmatchingtool_webapp.Services; // Zorg dat EmailService namespace klopt
+using advanced_jobmatchingtool_webapp.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
 namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
@@ -26,31 +21,24 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly EmailService _emailService;
-        private readonly IWebHostEnvironment _hostingEnvironment;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
-            EmailService emailService,
-            IWebHostEnvironment hostingEnvironment)
+            ILogger<RegisterModel> logger)
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailService = emailService;
-            _hostingEnvironment = hostingEnvironment;
         }
 
         [BindProperty]
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
-
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public class InputModel
@@ -101,52 +89,28 @@ namespace AdvancedJobmatchingTool.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
                 user.Voornaam = Input.Firstname;
                 user.Familienaam = Input.Lastname;
                 user.TermsCond = Input.TermsCond;
                 user.ProfileComplete = false;
                 user.Role = "Voorlopige kandidaat";
 
-                _logger.LogWarning("Registratie poging voor e-mail: {Email}", Input.Email);
+                _logger.LogInformation("Registratie poging voor e-mail: {Email}", Input.Email);
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("Nieuwe gebruiker geregistreerd.");
-
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    var naam = $"{Input.Firstname} {Input.Lastname}";
-                    var onderwerp = "Bevestig je e-mailadres";
-                    var bericht = $@"
-                            Beste {naam},<br/><br/>
-                            Bedankt voor je registratie bij Opus Aptus. Het enige wat je nu nog moet doen is je e-mailadres bevestigen.<br/><br/>
-                            Klik op onderstaande link om je e-mailadres te bevestigen:<br/>
-                            <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Bevestig je e-mailadres</a><br/><br/>
-                            Met vriendelijke groet,<br/>
-                            Het Opus Aptus team.
-";
-
-                    await _emailService.SendEmailAsync(naam, Input.Email, onderwerp, bericht);
+                    _logger.LogInformation("Nieuwe gebruiker geregistreerd als Voorlopige kandidaat.");
 
                     await _userManager.AddToRoleAsync(user, "Voorlopige kandidaat");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    // Direct inloggen
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    // Redirect naar een bevestigingspagina met duidelijke boodschap
+                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
                 }
 
                 foreach (var error in result.Errors)

@@ -59,6 +59,7 @@ builder.Services.AddScoped<IPersonaliaKandidaatRepository, PersonaliaKandidaatRe
 builder.Services.AddScoped<IStatuutKandidaatRepository,  StatuutKandidaatRepository>();
 builder.Services.AddScoped<IKandidaatService, KandidaatService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<ILogger>();
 
 //builder.Logging.ClearProviders();
 //builder.Logging.AddConsole();

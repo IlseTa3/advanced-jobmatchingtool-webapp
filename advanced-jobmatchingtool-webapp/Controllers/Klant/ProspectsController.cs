@@ -17,12 +17,14 @@ namespace advanced_jobmatchingtool_webapp.Controllers.Klant
         private readonly ApplicationDbContext _context;
         private readonly EmailService _emailService;
         private readonly IProspectService _prospectService;
+        private readonly ILogger<ProspectsController> _logger;
 
-        public ProspectsController(ApplicationDbContext context,EmailService emailService,IProspectService prospectService)
+        public ProspectsController(ApplicationDbContext context,EmailService emailService,IProspectService prospectService, ILogger<ProspectsController> logger)
         {
             _context = context;
             _emailService = emailService;
             _prospectService = prospectService;
+            _logger = logger;
         }
 
         // GET: Prospects
@@ -68,6 +70,7 @@ namespace advanced_jobmatchingtool_webapp.Controllers.Klant
         {
             if (ModelState.IsValid)
             {
+                _logger.LogWarning("Create prospect gestart voor {Naam}", prospect.NaamContactpersoon);
                 await _prospectService.CreateProspectAsync(prospect);
 
                 var naam = prospect.NaamContactpersoon;
@@ -93,7 +96,7 @@ namespace advanced_jobmatchingtool_webapp.Controllers.Klant
 
 
                 await _emailService.SendEmailAsync(naam, email, onderwerp, bericht);
-
+               
 
                 return RedirectToAction(nameof(Bevestiging));
             }
